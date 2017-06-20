@@ -1,3 +1,4 @@
+#Projet IA
 import requests
 
 #r = requests.get('http://echo.jsontest.com/events/mesboules/Tristal/LeCristal')
