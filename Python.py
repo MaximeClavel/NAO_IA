@@ -6,38 +6,98 @@ import requests
 import json
 from Carte import Carte
 
-maCarte = Carte(0,8)
+#********FONCTIONS********#
 
-url = 'http://79.137.38.211/api/public/index.php/'
+#** GET INFOS**#
+#Récupérer les cartes de notre mains, et les listes Vrai Faux
+#Compléter l'objet de la carte
 
-url_jouerCoup='jouercoup'
-
-
-#carte : [int couleur, int rank]
-
-Hand = getHand()
-
-
-
-#***JOUER UNE CARTE ****#
-#playcard = {'card': [maCarte.color,maCarte.value]}
-#reqPost = requests.post(url+url_jouerCoup, json=playcard)
-
-
-
-
-
-
-
-
-#***** GET DES CARTES QUE L'ON A DANS LA MAIN *****#
 def getHand():
-	#reqGetHand = requests.get('http://79.137.38.211/api/public/index.php/gethand')
-	reqGetHand = requests.get('http://echo.jsontest.com/couleur/mesboules/Tristal/LeCristal')
-	with open(reqGetHand) as data_hand :
-		handJson = json.load(data_hand)
-	print(handJson)
-	return handJson
+	
+	reqGetHand = requests.get(url+url_getHand)
+	print''
+	print'reqGetHand :'
+	print reqGetHand
+	print'reqGetHand.text :'
+	print reqGetHand.text
+	print''
+	getHandJson = json.loads(reqGetHand.text)
+
+	while getHandJson['turn'] != 4:
+		print''
+		print'Turn :'
+		print getHandJson['turn']
+
+		reqGetHand = requests.get(url+url_getHand)
+		#reqGetHand = requests.get('http://echo.jsontest.com/couleur/mesboules/Tristal/LeCristal')
+		print''
+		print getHandJson
+
+		print''
+		getHandJson = json.loads(reqGetHand.text)
+
+		print getHandJson
+		print''
+		print 'DUMPS'
+		print json.dumps(getHandJson, sort_keys=True, indent=4)
+
+		print''
+		print'DECODED'
+		print getHandJson['truth_list']
+
+		print''
+		print'TEXT'
+		print(reqGetHand.text)
+
+		#with open(reqGetHand) as data_hand :
+			#handJson = json.load(data_hand)
+		#print(handJson)
+
+
+	return getHandJson #reqGetHand
+
+	
+
+
+#** JOUER CARTE**#
+def jouerCoup(CarteAjouer):
+	playcard = {'card': [CarteAjouer.color,CarteAjouer.value]}
+	reqPost = requests.post(url+url_jouerCoup, json=playcard)
+	print''
+	print ("JSON :")
+	print(reqPost.text)
+	print''
+	print ("STATUS :")
+	print(reqPost.status_code)
+	print''
+	print("URL :")
+	print(url+url_jouerCoup)
+	print''
+
+
+#********************************************#
+#******************* MAIN *******************#
+#*******carte: [int couleur, int rank]*******#
+#********************************************#
+
+if __name__ == '__main__':
+
+	maCarte = Carte(0,8)
+
+	url = 'http://79.137.38.211/api/public/index.php/'
+
+	url_jouerCoup='jouercoup'
+	url_getHand='gethand'
+
+	
+	#jouerCoup(maCarte)
+	getHand()
+
+
+
+
+
+
 
 
 
