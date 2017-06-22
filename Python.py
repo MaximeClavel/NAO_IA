@@ -8,55 +8,19 @@ from Carte import Carte
 
 #********FONCTIONS********#
 
-#** GET INFOS**#
-#Récupérer les cartes de notre mains, et les listes Vrai Faux
-#Compléter l'objet de la carte
+#** GET BEST CARD **#
+def getBestCard():
 
-def getHand():
-	
-	reqGetHand = requests.get(url+url_getHand)
-	print''
-	print'reqGetHand :'
-	print reqGetHand
-	print'reqGetHand.text :'
-	print reqGetHand.text
-	print''
-	getHandJson = json.loads(reqGetHand.text)
+	##** ARBRE DE DECISION **##
 
-	while getHandJson['turn'] != 4:
-		print''
-		print'Turn :'
-		print getHandJson['turn']
+	carteAjouer = Carte(0,9)
 
-		reqGetHand = requests.get(url+url_getHand)
-		#reqGetHand = requests.get('http://echo.jsontest.com/couleur/mesboules/Tristal/LeCristal')
-		print''
-		print getHandJson
-
-		print''
-		getHandJson = json.loads(reqGetHand.text)
-
-		print getHandJson
-		print''
-		print 'DUMPS'
-		print json.dumps(getHandJson, sort_keys=True, indent=4)
-
-		print''
-		print'DECODED'
-		print getHandJson['truth_list']
-
-		print''
-		print'TEXT'
-		print(reqGetHand.text)
-
-		#with open(reqGetHand) as data_hand :
-			#handJson = json.load(data_hand)
-		#print(handJson)
+	return carteAjouer
 
 
-	return getHandJson #reqGetHand
 
-	
+
+
 
 
 #** JOUER CARTE**#
@@ -74,6 +38,99 @@ def jouerCoup(CarteAjouer):
 	print(url+url_jouerCoup)
 	print''
 
+#** GET INFOS**#
+#Récupérer les cartes de notre mains, et les listes Vrai Faux
+#Compléter l'objet de la carte
+
+def getHand():
+	
+	reqGetHand = requests.get(url+url_getHand)
+	"""print''
+	print'reqGetHand :'
+	print reqGetHand
+	print'reqGetHand.text :'
+	print reqGetHand.text
+	print''"""
+	
+	if reqGetHand.status_code == 200:
+
+		getHandJson = json.loads(reqGetHand.text)
+
+		while getHandJson['turn'] != 4 && getHandJson['turn'] != 0 && reqGetHand.status_code == 200:
+			"""print''
+			print'Turn :'
+			print getHandJson['turn']"""
+
+			
+			reqGetHand = requests.get(url+url_getHand)
+			#reqGetHand = requests.get('http://echo.jsontest.com/couleur/mesboules/Tristal/LeCristal')
+				
+			if reqGetHand.status_code == 200:
+				"""print''
+				print getHandJson"""
+
+				#print''
+				getHandJson = json.loads(reqGetHand.text)
+
+				"""print getHandJson
+				print''
+				print 'DUMPS'"""
+				json.dumps(getHandJson, sort_keys=True, indent=4)
+				print''
+				print'Données récupérées : '
+				print getHandJson.text
+				
+				"""print''
+				print'DECODED'
+				print getHandJson['truth_list']"""
+
+				""""print''
+				print'TEXT'"""
+
+				#Lancer la fonction d'arbres décisionnel ici
+				#Si c'est à nous de jouer alors
+				if getHandJson['turn'] == 4:
+					
+					print''
+					print 'A nous de jouer'
+					carteAJouer = getBestCard()
+
+					jouerCoup(carteAJouer)
+					print''
+					print'Coup joué'
+
+				else if getHandJson['turn'] == 0:
+					print''
+					print'PROPHETE prononcé.'
+				else:
+					print''
+					print 'Pas notre tour'
+
+
+				print(reqGetHand.text)
+
+			else:
+				print''
+				print ('Reponse '+ reqGetHand.status_code + ' du serveur.')
+
+			"""with open(reqGetHand) as data_hand :
+				handJson = json.load(data_hand)
+			print(handJson)"""
+
+
+		
+
+
+	else:
+		print''
+		print('Reponse ' + reqGetHand.status_code + ' du serveur.')
+
+
+
+	return getHandJson #reqGetHand
+
+
+
 
 #********************************************#
 #******************* MAIN *******************#
@@ -90,21 +147,9 @@ if __name__ == '__main__':
 	url_getHand='gethand'
 
 	
-	#jouerCoup(maCarte)
+	#Récupère les carte et joue le coup lorsque c'est à nous de jouer
 	getHand()
 
-
-
-
-
-
-
-
-
-#******* FONCTION SPAM **********#
-#a moi ? (tourjoueur à moi ?)
-#Oui maj de la main + Listes vrai/faux(dans tab)
-#Classe Main, ListeVraiFaux
 
 
 
