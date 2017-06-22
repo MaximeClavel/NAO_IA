@@ -1,32 +1,53 @@
 # coding: utf-8
 
 #Projet IA
+# turn 4 : IA
+# turn 0 : Prophete
+# turn -1 : Attente
 
 import requests
+import os
 import json
 from Carte import Carte
+
+
+clear = lambda: os.system('clear')
 
 #********FONCTIONS********#
 
 #** GET BEST CARD **#
-def getBestCard():
+def getBestCard(HandJson,index):
 
 	##** ARBRE DE DECISION **##
 
-	carteAjouer = Carte(0,9)
+	#carteAjouer = Carte(0,9)
+
+	tabHand = HandJson['hand']
+	print tabHand
+	for i in range(0,5):
+		print tabHand[i] #Ceci affiche chaque carte de la main
+		print tabHand[i][0] #COULEUR DE LA CARTE
+		print tabHand[i][1]	#NUMERO DE LA CARTE
+
+	"""
+	with HandJson['hand'] as data_hand :
+		CardJson = json.load(data_hand)
+		print(CarJson.text)
+	"""
+
+	carteAjouer = Carte(tabHand[index][0],tabHand[index][1])
 
 	return carteAjouer
 
 
 
-
-
-
-
 #** JOUER CARTE**#
-def jouerCoup(CarteAjouer):
-	playcard = {'card': [CarteAjouer.color,CarteAjouer.value]}
+def jouerCoup(CarteAjouer,monprint):
+	
+	#monprint += 'AVANT ENVOI CarteCouleur :' + str(CarteAjouer.color) + ' CarteValeur :' + str(CarteAjouer.value)
+	playcard = {'card_to_play': [CarteAjouer.color,CarteAjouer.value]}
 	reqPost = requests.post(url+url_jouerCoup, json=playcard)
+	
 	print''
 	print ("JSON :")
 	print(reqPost.text)
@@ -44,90 +65,87 @@ def jouerCoup(CarteAjouer):
 
 def getHand():
 	
-	reqGetHand = requests.get(url+url_getHand)
-	"""print''
-	print'reqGetHand :'
-	print reqGetHand
-	print'reqGetHand.text :'
-	print reqGetHand.text
-	print''"""
-	
-	if reqGetHand.status_code == 200:
+	monprint = ''
+	index = 0
 
-		getHandJson = json.loads(reqGetHand.text)
+	while True:
 
-		while getHandJson['turn'] != 4 && getHandJson['turn'] != 0 && reqGetHand.status_code == 200:
-			"""print''
-			print'Turn :'
-			print getHandJson['turn']"""
+		reqGetHand = requests.get(url+url_getHand)
+		"""
+		print''
+		print'reqGetHand :'
+		print reqGetHand
+		print'reqGetHand.text :'
+		print reqGetHand.text
+		print''
+		"""
+		
+		if reqGetHand.status_code == 200:
 
-			
-			reqGetHand = requests.get(url+url_getHand)
-			#reqGetHand = requests.get('http://echo.jsontest.com/couleur/mesboules/Tristal/LeCristal')
+			getHandJson = json.loads(reqGetHand.text)
+			#print reqGetHand.text
+
+			if getHandJson['turn'] == 0:
 				
-			if reqGetHand.status_code == 200:
-				"""print''
-				print getHandJson"""
-
-				#print''
-				getHandJson = json.loads(reqGetHand.text)
-
-				"""print getHandJson
 				print''
-				print 'DUMPS'"""
-				json.dumps(getHandJson, sort_keys=True, indent=4)
+				print'Someone is PROPHETE'
+				return
+
+			if getHandJson['turn'] == '4':
+				print''
+				print 'A nous de jouer !'
+				
+				"""print''
+				print getHandJson
+
+				print getHandJson
+				print''
+				print 'DUMPS'
+				json.dumps(getHandJson, sort_keys=True, indent=2)
+				
 				print''
 				print'Données récupérées : '
 				print getHandJson.text
-				
-				"""print''
-				print'DECODED'
-				print getHandJson['truth_list']"""
 
-				""""print''
+				print''
+				print'DECODED'
+				print getHandJson['truth_list']
+
+				print''
 				print'TEXT'"""
 
 				#Lancer la fonction d'arbres décisionnel ici
 				#Si c'est à nous de jouer alors
-				if getHandJson['turn'] == 4:
-					
-					print''
-					print 'A nous de jouer'
-					carteAJouer = getBestCard()
+				
+				carteAJouer = getBestCard(getHandJson,index)
+				index += 1
 
-					jouerCoup(carteAJouer)
-					print''
-					print'Coup joué'
+				jouerCoup(carteAJouer,monprint)
 
-				else if getHandJson['turn'] == 0:
-					print''
-					print'PROPHETE prononcé.'
-				else:
-					print''
-					print 'Pas notre tour'
-
-
-				print(reqGetHand.text)
-
-			else:
 				print''
-				print ('Reponse '+ reqGetHand.status_code + ' du serveur.')
+				monprint += 'Carte joué : ' + ' Color=' + str(carteAJouer.color) + ' & Value=' + str(carteAJouer.value) + '\r\n'
+				print monprint
 
-			"""with open(reqGetHand) as data_hand :
-				handJson = json.load(data_hand)
-			print(handJson)"""
+			elif getHandJson['turn'] == -1:
+				clear()
+				print monprint
+				print ''
+				print 'A personne de jouer...'		
+			else:
+				
+				clear()
+				print monprint
+				print ''
+				print 'En attente de notre tour...'
 
 
-		
+			
 
-
-	else:
-		print''
-		print('Reponse ' + reqGetHand.status_code + ' du serveur.')
-
-
-
-	return getHandJson #reqGetHand
+		else:
+				print''
+				print('Reponse ' + str(reqGetHand.status_code) + ' du serveur.')				
+				
+ 
 
 
 
@@ -146,11 +164,13 @@ if __name__ == '__main__':
 	url_jouerCoup='jouercoup'
 	url_getHand='gethand'
 
-	
+	print''
+	print'Get Hand'
+	print''
 	#Récupère les carte et joue le coup lorsque c'est à nous de jouer
 	getHand()
 
-
+	print '######## FIN DU PROGRAMME ########'
 
 
 
