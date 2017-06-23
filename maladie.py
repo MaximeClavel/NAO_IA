@@ -5,8 +5,7 @@
 ## \brief Contient l'algorithme ID3
 
 # modules nécessaires
-import math
-import copy
+
 # -------------------------------------------------------------------------------
 print "Chargement du module ID3"
 print "Construction d'un arbre de decision avec ID3."
@@ -21,6 +20,8 @@ print "\t@author: michael.schumacher@epfl.ch"
 print "\t@copyright: EPFL-IC-IIF-LIA 2006-2007"
 # -------------------------------------------------------------------------------
 
+import math
+import copy
 
 print 'mes boules'
 ## La liste des exemples
