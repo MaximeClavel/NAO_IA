@@ -20,6 +20,10 @@ class Carte: # Définition de notre classe Carte
 	#12:Dame
 	#13:Roi
 
+    ##COULEUR##
+	#0:NOIR
+	#1:ROUGE
+
     """
 
     def __init__(self, P_attribut, P_valeur): # Notre méthode constructeur

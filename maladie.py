@@ -644,4 +644,4 @@ def retourneIndiceMinimum(liste):
 # BATTERIE DE TESTS
 # -------------------------------------------------------------------------------
 #exec file('maladie.py')
-exec file('test.py')
+exec file('jeuDeTestCarte.py')

@@ -18,6 +18,7 @@ initID3([['angine-erythemateuse', 'elevee', 'gonflees', 'oui', 'oui', 'non', 'no
          ['rubeole', 'legere', 'normales', 'oui', 'non', 'non', 'non', 'non', 'normale', 'taches-rouges', 'normaux'],
          ['rubeole', 'non', 'normales', 'oui', 'non', 'non', 'non', 'non', 'normale', 'taches-rouges', 'normaux'],
          ['rubeole', 'non', 'normales', 'oui', 'non', 'non', 'non', 'non', 'normale', 'normales', 'normaux']],
+
         [['maladies', 'angine-erythemateuse', 'angine-pultacee', 'angine-diphterique', 'appendicite', 'bronchite','coqueluche','pneumonie', 'rougeole', 'rubeole'],
          ['fievre', 'non', 'legere', 'elevee'],
          ['amygdales', 'normales', 'gonflees', 'points-blancs', 'enduit-blanc'],
