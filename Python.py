@@ -10,9 +10,9 @@
 import requests
 import os
 import json
-from Carte import Carte
+from Carte import *
 from random import *
-from Liste import Liste
+from Liste import *
 
 gListeMain=[]
 gListeVrai=[]
