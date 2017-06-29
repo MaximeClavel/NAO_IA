@@ -1,4 +1,5 @@
 # coding: utf-8
+
 from Carte import *
 
 
@@ -21,6 +22,6 @@ class Liste: # Définition de notre classe Carte
     """
 
     def __init__(self): # Notre méthode constructeur
-        
+
         self.mesCartes = new Carte
 

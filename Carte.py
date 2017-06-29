@@ -37,7 +37,7 @@ class Carte: # Définition de notre classe Carte
         if self.attribut == 0 or self.attribut == 3:
             self.couleur = 0 #Carte Noir
         else:
-            self.couleur = 0 #Carte Rouge
+            self.couleur = 1 #Carte Rouge
 
         """  Permet de définir la parité """
         if int(self.valeur)%2 == 0:
