@@ -12,7 +12,7 @@ import os
 import json
 from Carte import *
 from random import *
-from Liste import *
+#from Liste import *
 
 gListeMain=[]
 gListeVrai=[]
@@ -26,6 +26,13 @@ clear = lambda: os.system('clear')
 
 
 #********FONCTIONS********#
+
+#def concatListes(P_ListeVrai, P_ListeFaux):
+
+	#for i in range(0,52):
+	#P_ListeVrai
+
+
 
 #** GET BEST CARD **#
 def getBestCard(index):
@@ -114,11 +121,11 @@ def getHand():
 				#Récupération de la liste faux
 				gListeFaux = getHandJson['wrong_list']
 
-
+				concatListes(gListeVrai,gListeFaux)
 
 				#Lancer la fonction d'arbres décisionnel ici
 				#Si c'est à nous de jouer alors
-				
+				#Arbre de décision à lancer
 				carteAJouer = getBestCard(index)
 				index += 1#randrange(5)
 
@@ -177,6 +184,10 @@ if __name__ == '__main__':
 	print'Get Hand'
 	print''
 	
+
+
+	#monArbre = Arbre()
+
 
 	#Récupère les carte et joue le coup lorsque c'est à nous de jouer
 	getHand()
