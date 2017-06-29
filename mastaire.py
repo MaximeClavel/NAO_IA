@@ -49,7 +49,12 @@ def iscardnoir(Carte):
     else:
         return False
 
+# Main
 if __name__ == '__main__':
+
+    # Init des variables de verif
+    validiteCouleur = 1;
+    validiteParite = 1;
 
     # Init de la carte TEST
     carte = Carte(0, 10)
@@ -75,6 +80,7 @@ if __name__ == '__main__':
         print ('carte impaire; regle respectée')
     else:
         print ('regle parité non resepectee ! ')
+        validiteParite = 0
 
     if couleur == 0 and iscardnoir(carte) == True:
         print ('carte noir; règle respectée')
@@ -82,3 +88,8 @@ if __name__ == '__main__':
         print ('carte rouge; règle respectée')
     else:
         print ('regle couleur non resepectee ! ')
+        validiteCouleur = 0
+
+    if validiteCouleur == 1 and validiteParite == 1:
+        print ('')
+        print ('carte valide')
