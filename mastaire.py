@@ -114,13 +114,13 @@ if __name__ == '__main__':
     print (regle)
     print ('')
 
+    # Booleen de prophetisation
+    boolProphete = True
+
     # Requete de recupreation de carte
     # Tant que perosnne n'est prophete set carte en verif
     while True:
-
-
         if reqGetCard.status_code == 200:
-
             getCardJson = json.loads(reqGetCard.text)
 
             if len(getCardJson['card_played']) != 0 and getCardJson['prophete'] == '1':
@@ -157,10 +157,22 @@ if __name__ == '__main__':
                     else:
                         print ('regle couleur non resepectee ! ')
                         validiteCouleur = 0
-
                 if validiteCouleur == 1 and validiteParite == 1:
                     print ('')
                     print ('carte valide')
+                else:
+                    print ('')
+                    boolProphete = False
+                    break
+        break
+
+    if len(getCardJson['card_played']) != 0 and getCardJson['prophete'] == '1' and boolProphete == True:
+        print ('True : La main du joueur fait qu il est prophete')
+        # TODO Requete de prophete TRUE
+    elif len(getCardJson['card_played']) != 0 and getCardJson['prophete'] == '1' and boolProphete == False:
+        print ('False : La main du joueur fait qu il n est prophete')
+        # TODO Requete de prophete False
+
     # End request true pour prophete
 
     # Requete pour savoir si le mec à jouer une carte et Test de cette carte
