@@ -104,7 +104,7 @@ def getHand():
 			getHandJson = json.loads(reqGetHand.text)
 			#print reqGetHand.text
 
-			if getHandJson['turn'] == 0:
+			if getHandJson['turn'] == '0':
 				
 				print''
 				print'Someone is PROPHETE'
