@@ -98,7 +98,6 @@ def getHand():
 
 		reqGetHand = requests.get(url+url_getHand)
 
-		
 		if reqGetHand.status_code == 200:
 
 			getHandJson = json.loads(reqGetHand.text)
