@@ -45,3 +45,7 @@ class Carte: # Définition de notre classe Carte
         else:
             self.parite = 1 #Impair
 
+        if int(self.valeur) > 10:
+            self.tete = 1
+        else:
+            self.tete = 0
