@@ -117,64 +117,72 @@ def isCardPlayedValidTEST(carte):
 
 
 # Verification de la validite d'une seul carte
-def isCardPlayedValid(carte):
+def isCardPlayedValid():
     global url
     global url_cardPlayed
+    global validiteCouleur
+    global validiteParite
 
-    reqGetCard = requests.get(url + url_cardPlayed) #TODO: Verif URL
-    if reqGetCard.status_code == 200:
+    # Début du ping en folie
+    while True:
+        reqGetCard = requests.get(url + url_cardPlayed) #TODO: Verif URL
+        if reqGetCard.status_code == 200:
 
-        getCardJson = json.loads(reqGetCard.text)
+            getCardJson = json.loads(reqGetCard.text)
 
-        if len(getCardJson['card_played']) != '0' and getCardJson['prophete'] == '0':
-            print''
-            if len(getCardJson['card_played']) == 1:
-                print'Un joueur à jouer une carte'
-                carte = getCardJson['card_played'][0]
-                print carte
+            if len(getCardJson['card_played']) != '0' and getCardJson['prophete'] == '0':
+                print''
+                if len(getCardJson['card_played']) == 1:
+                    print'Un joueur à jouer une carte'
+                    carte = getCardJson['card_played'][0]
+                    print carte
+            for x in range(0, len(cartes)):
+                # Regle 1
+                if regle == 1:
+                    if parite == 0 and iscardpair(x) is True:
+                        print ('Carte paire; regle respectée')
+                    elif parite == 1 and iscardpair(x) is False:
+                        print ('carte impaire; regle respectée')
+                    else:
+                        print ('regle parité non resepectee ! ')
+                        validiteParite = 0
 
-        # Regle 1
-        if regle == 1:
-            if parite == 0 and iscardpair(carte) is True:
-                print ('Carte paire; regle respectée')
-            elif parite == 1 and iscardpair(carte) is False:
-                print ('carte impaire; regle respectée')
-            else:
-                print ('regle parité non resepectee ! ')
-                validiteParite = 0
+                # Regle 2
+                if regle == 2:
+                    if parite == 0 and iscardpair(x) is True:
+                        print ('Carte paire; regle respectée')
+                    elif parite == 1 and iscardpair(x) is False:
+                        print ('carte impaire; regle respectée')
+                    else:
+                        print ('regle parité non resepectee ! ')
+                        validiteParite = 0
 
-        # Regle 2
-        if regle == 2:
-            if parite == 0 and iscardpair(carte) is True:
-                print ('Carte paire; regle respectée')
-            elif parite == 1 and iscardpair(carte) is False:
-                print ('carte impaire; regle respectée')
-            else:
-                print ('regle parité non resepectee ! ')
-                validiteParite = 0
+                    if couleur == 0 and iscardnoir(x) == True:
+                        print ('carte noir; règle respectée')
+                    elif couleur == 1 and iscardnoir(x) == False:
+                        print ('carte rouge; règle respectée')
+                    else:
+                        print ('regle couleur non resepectee ! ')
+                        validiteCouleur = 0
 
-            if couleur == 0 and iscardnoir(carte) == True:
-                print ('carte noir; règle respectée')
-            elif couleur == 1 and iscardnoir(carte) == False:
-                print ('carte rouge; règle respectée')
-            else:
-                print ('regle couleur non resepectee ! ')
-                validiteCouleur = 0
+                if validiteCouleur == 1 and validiteParite == 1:
+                    print ('')
+                    #TODO: POST si LA carte est bonne !! > ?
+                    print (x,' : carte valide')
 
-        if validiteCouleur == 1 and validiteParite == 1:
-            print ('')
-            #TODO: POST si LA carte est bonne !!
-            print ('carte valide')
+        break
 
 
 # Verification si le mec est prophete quand il le demande
 def isProphete():
     # Requete de recupreation de carte
     # Tant que perosnne n'est prophete set carte en verif
-    while True:
-        global url
-        global url_cardPlayed
+    global url
+    global url_cardPlayed
+    global validiteCouleur
+    global validiteParite
 
+    while True:  # Début du ping en folie
         reqGetCard = requests.get(url + url_cardPlayed)
         if reqGetCard.status_code == 200:
             getCardJson = json.loads(reqGetCard.text)
