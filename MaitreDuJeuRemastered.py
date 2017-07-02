@@ -336,27 +336,27 @@ def isCardPlayedValidAndMaybeProphete():
                         testInferieurEtSuperieur(carteTmp)
                         testEgaliteCard(carteTmp)
 
+                    # Set du return
+                    urlValiditeCard = 'http://79.137.38.211/api/public/index.php/card_valid'
+
                     if regle == 1:
                         if validiteCouleur == 1:
                             print ('')
-                            #TODO: POST si LA carte est bonne !! > ?
+                            requests.post(urlValiditeCard, True)
                             print (x,' : carte valide')
                     if regle == 2:
-                        print ('Validité parité : ', validiteParite)
-                        print ('Validité couelur : ', validiteCouleur)
                         if validiteCouleur == 1 and validiteParite == 1:
-                            print ('dioehzouchbzeouc')
-                            # TODO: POST si LA carte est bonne !! > ?
+                           # requests.post(urlValiditeCard, True)
                             print (x, ' : carte valide')
                     if regle == 3:
                         if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1:
                             print ('')
-                            # TODO: POST si LA carte est bonne !! > ?
+                            requests.post(urlValiditeCard, True)
                             print (x, ' : carte valide')
                     if regle == 4:
                         if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
                             print ('')
-                            # TODO: POST si LA carte est bonne !! > ?
+                            requests.post(urlValiditeCard, True)
                             print (x, ' : carte valide')
         break
 
@@ -364,4 +364,11 @@ def isCardPlayedValidAndMaybeProphete():
 if __name__ == '__main__':
     #c = Carte(0, 10) #TODO: Load list cards from API
     generateregle()
-    isCardPlayedValidAndMaybeProphete()
+
+    #Spam Api to play
+    urlToSpamToPlay = 'http://79.137.38.211/api/public/index.php/cards'
+    while True:
+        reqGetSpamTurn = requests.get(urlToSpamToPlay)
+        if reqGetSpamTurn.status_code == 200:
+            if reqGetSpamTurn['nouveau_coup'] == '1':
+                isCardPlayedValidAndMaybeProphete()
