@@ -9,11 +9,19 @@ from Carte import *
 parite = 0
 couleur = 0
 regle = 0
+inferieur = 0
+superieur = 0
+nbSuperieur = 0
+nbInferieur = 0
+validiteCouleur = 0
+validiteParite = 0
+validiteInferieur = 0
+validiteSuperieur = 0
+# End definition regle
+
 boolProphete = True
 url = 'http://79.137.38.211/api/public/index.php/'
 url_cardPlayed = 'cards'
-validiteCouleur = 1
-validiteParite = 1
 cartes = []             # Tableau de carte à récupérer
 carte = Carte(0, 0)     # Instance de carte
 
@@ -22,7 +30,10 @@ def generateregle():
     global parite
     global couleur
     global regle
-
+    global inferieur
+    global superieur
+    global nbInferieur
+    global nbSuperieur
     parite = random.randint(0,1)
     couleur = random.randint(0,1)
 
@@ -36,31 +47,89 @@ def generateregle():
     else:
         print ('règle rouge')
 
+    setRegleInferieurOrAndSuperieur()
+    print ('regle superieur a ', nbSuperieur)
+    print ('regle inferieur a ', nbInferieur)
+
+
     # Plusieurs règles ?
-    nbregle = random.randint(1, 2)
+    #nbregle = random.randint(1, 4)
+    nbregle = 4
+
     if nbregle == 1:
         regle = 1
-    else:
+    elif nbregle == 2:
         regle = 2
+    elif nbregle == 3:
+        regle = 3
+    elif nbregle == 4:
+        regle = 4
 
     # Nb Règles definies au hasard
     print ('')
-    print ('Nombre de regle : ')
-    print (regle)
+    print 'Nombre de regle : ', regle
     print ('')
 
-# Maitre du jeu
-def idcardvalide(Carte):
-    print ('')
-    if parite == 0 and iscardpair(Carte) == True:
-        print ('Carte paire; règle respectée')
-    elif parite == 1 and iscardpair(Carte) == False:
-        print ('carte impaire; règle non respectée')
+# Instance des nombres inferieur et superieur
+def setRegleInferieurOrAndSuperieur():
+    global nbInferieur
+    global nbSuperieur
+    nbSuperieur = random.randint(1, 13)
+    nbInferieur = random.randint(1, 13)
 
-    if couleur == 0 and iscardnoir(Carte) == True:
-        print ('carte noir; règle respectée')
-    elif couleur == 1 and iscardnoir(Carte) == False :
-        print ('carte rouge; règle non respectée')
+def testParite(carteParite):
+    global validiteParite
+    print ('')
+    if not iscardpair(carteParite):
+        print ('Carte impaire; regle respectee')
+        validiteParite = 1
+    else:
+        print ('carte pair; regle non respectee')
+
+def testCouleur(carteCouleyr):
+    global validiteCouleur
+    if not iscardnoir(carteCouleyr):
+        print ('carte rouge; regle non respectee')
+        validiteCouleur = 1
+    else:
+        print ('carte noir; regle respectee')
+
+def testInferieurEtSuperieur(carteInferieur):
+    global validiteInferieur
+    global validiteSuperieur
+
+    # Multi check
+    if regle == 4:
+        if carteInferieur.valeur > nbSuperieur and carteInferieur.valeur < nbInferieur:
+            print ('carte de valeur inferieur; regle respecte')
+            print ('carte de valeur superieur; regle respecte')
+            validiteInferieur = 1
+            validiteSuperieur = 1
+        if carteInferieur.valeur < nbSuperieur and carteInferieur.valeur < nbInferieur:
+            print ('carte de valeur superieur; regle respectee > val carte > ', carteInferieur.valeur)
+        else:
+            print ('Valeur devrait etre superieur')
+
+        if carteInferieur.valeur > nbSuperieur and carteInferieur.valeur > nbInferieur:
+            print ('carte de valeur inferieur; regle respectee > val carte > ', carteInferieur.valeur)
+        else:
+            print ('Valeur devrait etre inferieur')
+
+    # Random entre Superieur et Inferieur
+    intRandom = random.randint(0,1)
+    if regle == 3 and intRandom == 1:
+        if carteInferieur.valeur > nbSuperieur:
+            print ('carte de valeur superieur; regle respectee > val carte > ', carteInferieur.valeur)
+            validiteSuperieur = 1
+        else:
+            print ('carte de valeur superieur; regle non respectee > val carte > ', carteInferieur.valeur)
+
+    if regle == 3 and intRandom == 0:
+        if  carteInferieur.valeur < nbSuperieur:
+            validiteInferieur = 1
+            print ('carte de valeur inferieur; regle respectee > val carte > ', carteInferieur.valeur)
+        else:
+            print ('carte de valeur inferieur; regle non respectee > val carte > ', carteInferieur.valeur)
 
 #  Vérification de parité
 def iscardpair(cartep):
@@ -110,7 +179,7 @@ def isCardPlayedValidTEST(carteDeTest):
             print ('regle couleur non resepectee ! ')
             validiteCouleur = 0
 
-    if validiteCouleur == 1 and validiteParite == 1:
+    if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
         print ('')
         # TODO: POST si LA carte est bonne !!
         print ('carte valide')
@@ -123,6 +192,7 @@ def isCardPlayedValidAndMaybeProphete():
     global validiteCouleur
     global validiteParite
     global carte
+    global boolProphete
 
     # Début du ping en folie
     while True:
@@ -148,36 +218,29 @@ def isCardPlayedValidAndMaybeProphete():
                     print ('')
 
                     if regle == 1:
-                        if parite == 0 and iscardpair(carteTmp) is True:
-                            print ('Carte paire; regle respectée')
-                        elif parite == 1 and iscardpair(carteTmp) is False:
-                            print ('carte impaire; regle respectée')
-                        else:
-                            print ('regle parité non resepectee ! ')
-                            validiteParite = 0
+                       testParite(carteTmp)
 
-                    # Regle 2
                     if regle == 2:
-                        if parite == 0 and iscardpair(carteTmp) is True:
-                            print ('Carte paire; regle respectée')
-                        elif parite == 1 and iscardpair(carteTmp) is False:
-                            print ('carte impaire; regle respectée')
-                        else:
-                            print ('regle parité non resepectee ! ')
-                            validiteParite = 0
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
 
-                        if couleur == 0 and iscardnoir(carteTmp) == True:
-                            print ('carte noir; règle respectée')
-                        elif couleur == 1 and iscardnoir(carteTmp) == False:
-                            print ('carte rouge; règle respectée')
-                        else:
-                            print ('regle couleur non resepectee ! ')
-                            validiteCouleur = 0
+                    if regle == 3:
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
+                        testInferieurEtSuperieur(carteTmp)
 
-                    if validiteCouleur == 1 and validiteParite == 1:
+                    if regle == 4:
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
+                        testInferieurEtSuperieur(carteTmp)
+
+                    if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
                         print ('')
-                        # TODO: POST si LA carte est bonne !! > ?
-                        print (x, ' : carte valide')
+                        print ('carte valide')
+                    else:
+                        print ('')
+                        boolProphete = False
+                        break
 
                 # Retour du POST pour prophete
                 urlProphete = 'http://79.137.38.211/api/public/index.php/tristan'
@@ -190,7 +253,7 @@ def isCardPlayedValidAndMaybeProphete():
 
             # If test Une carte SANS prophete
             else:
-                print'Un joueur à jouer une carte!!! '
+                print'Un joueur a joué une carte!!! '
                 print('')
 
                 # TODO: Get ALL CARDS FROM PLAYER WHO SAYS HE IS PROPHETE
@@ -204,96 +267,27 @@ def isCardPlayedValidAndMaybeProphete():
                     print ('')
 
                     if regle == 1:
-                        if parite == 0 and iscardpair(carteTmp) is True:
-                            print ('Carte paire; regle respectée')
-                        elif parite == 1 and iscardpair(carteTmp) is False:
-                            print ('carte impaire; regle respectée')
-                        else:
-                            print ('regle parité non resepectee ! ')
-                            validiteParite = 0
+                        testParite(carteTmp)
 
-                    # Regle 2
                     if regle == 2:
-                        if parite == 0 and iscardpair(carteTmp) is True:
-                            print ('Carte paire; regle respectée')
-                        elif parite == 1 and iscardpair(carteTmp) is False:
-                            print ('carte impaire; regle respectée')
-                        else:
-                            print ('regle parité non resepectee ! ')
-                            validiteParite = 0
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
 
-                        if couleur == 0 and iscardnoir(carteTmp) == True:
-                            print ('carte noir; règle respectée')
-                        elif couleur == 1 and iscardnoir(carteTmp) == False:
-                            print ('carte rouge; règle respectée')
-                        else:
-                            print ('regle couleur non resepectee ! ')
-                            validiteCouleur = 0
+                    if regle == 3:
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
+                        testInferieurEtSuperieur(carteTmp)
 
-                    if validiteCouleur == 1 and validiteParite == 1:
+                    if regle == 4:
+                        testParite(carteTmp)
+                        testCouleur(carteTmp)
+                        testInferieurEtSuperieur(carteTmp)
+
+                    if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
                         print ('')
                         #TODO: POST si LA carte est bonne !! > ?
                         print (x,' : carte valide')
 
-        break
-
-
-# Verification si le mec est prophete quand il le demande
-def isProphete():
-    # Requete de recupreation de carte
-    # Tant que perosnne n'est prophete set carte en verif
-    global url
-    global url_cardPlayed
-    global validiteCouleur
-    global validiteParite
-    global boolProphete
-
-    while True:  # Début du ping en folie
-        reqGetCard = requests.get(url + url_cardPlayed)
-        if reqGetCard.status_code == 200:
-            getCardJson = json.loads(reqGetCard.text)
-
-            if len(getCardJson['card_played']) != 0 and getCardJson['turn'] == '0':
-                print''
-                print'Un joueur à jouer'
-                cartes = getCardJson['card_played']
-                print cartes
-
-            for x in range (0,len(cartes)):
-                # Regle 1
-                if regle == 1:
-                    if parite == 0 and iscardpair(x) == True:
-                        print ('Carte paire; regle respectée')
-                    elif parite == 1 and iscardpair(x) == False:
-                        print ('carte impaire; regle respectée')
-                    else:
-                        print ('regle parité non resepectee ! ')
-                        validiteParite = 0
-
-                # Regle 2
-                if regle == 2:
-                    if parite == 0 and iscardpair(x) == True:
-                        print ('Carte paire; regle respectée')
-                    elif parite == 1 and iscardpair(x) == False:
-                        print ('carte impaire; regle respectée')
-                    else:
-                        print ('regle parité non resepectee ! ')
-                        validiteParite = 0
-
-                    if couleur == 0 and iscardnoir(x) == True:
-                        print ('carte noir; règle respectée')
-                    elif couleur == 1 and iscardnoir(x) == False:
-                        print ('carte rouge; règle respectée')
-                    else:
-                        print ('regle couleur non resepectee ! ')
-                        validiteCouleur = 0
-                if validiteCouleur == 1 and validiteParite == 1:
-                    print ('')
-                    print ('carte valide')
-                else:
-                    print ('')
-                    boolProphete = False
-                    break
         break
 
 # Main
