@@ -3,12 +3,12 @@
 
 class Noeud:
 
-    def __init__(self,parent):
+    def __init__(self,parent, attribut, leaf, resultat):
 
-    	self.attribut = ''
+    	self.attribut = attribut
     	self.tabShield = []
-    	self.isLeaf = 0
-    	self.resultat = 0
+    	self.isLeaf = leaf
+    	self.resultat = resultat
     	self.parent = parent
 
     def testCarte(maCarte):
