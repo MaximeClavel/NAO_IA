@@ -33,3 +33,15 @@ initID3([['angine-erythemateuse', 'elevee', 'gonflees', 'oui', 'oui', 'non', 'no
 
 # construit l'arbre de décision
 construitArbreDecision()
+
+
+
+
+
+
+
+
+def filter(self, tableau, attribut, valeur):
+
+   for x in tableau:
+      if x[0]

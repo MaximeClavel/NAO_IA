@@ -155,7 +155,10 @@ def getHand():
 				
  
 
-
+def test():
+	"Fonction de test."
+	maFonction = maFonction +1
+	return maFonction
 
 
 #********************************************#
@@ -180,7 +183,7 @@ if __name__ == '__main__':
 	url_getHand='gethand'
 
 	print''
-	print'Get Hand'
+	#print'Get Hand'
 	print''
 	
 
@@ -193,12 +196,16 @@ if __name__ == '__main__':
 
 	#print 'Valeur de la tete de ma carte : ' + str(maCarte.getValueForAttribute('tete'))
 
+	"""
 	print 'Tableau : ' + str(montab)
 
 	del montab[0]
 
 	print montab
+	"""
 
+	print test.__doc__
+	print ''
 
 	print '######## FIN DU PROGRAMME ########'
 
