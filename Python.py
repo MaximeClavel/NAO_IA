@@ -168,15 +168,18 @@ def test():
 
 if __name__ == '__main__':
 
-	
-	maCarte = Carte(0,13)
+	print '######## DEBUT DU PROGRAMME ########'
+	maCarte = Carte(0,6)
+	maCarte2 = Carte(3,4)
+	maCarte3 = Carte(2,8)
+	maCarte4 = Carte(1,7)
+	#gListeMain.append(maCarte)
 
-	gListeMain.append(maCarte)
-
-	print gListeMain
+	#print gListeMain
 	print''
 
 	montab = ['Tete','tab','mesboules']
+	montabCarte = [maCarte, maCarte2, maCarte3, maCarte4]
 
 	url='http://79.137.38.211/api/public/index.php/'
 	url_jouerCoup='jouercoup'
@@ -186,9 +189,13 @@ if __name__ == '__main__':
 	#print'Get Hand'
 	print''
 	
+	#TODO : 
+	#filtre tableau 
+	#donc tableau manquant gethigherpert,...
+	#Faire des cartes 
 
 
-	#monArbre = Arbre()
+	monArbre = Arbre()
 
 
 	#Récupère les carte et joue le coup lorsque c'est à nous de jouer
@@ -196,15 +203,20 @@ if __name__ == '__main__':
 
 	#print 'Valeur de la tete de ma carte : ' + str(maCarte.getValueForAttribute('tete'))
 
+	""""
+	print 'Tableau : ' + str(montabCarte)
+
+	for x in range(0,len(montabCarte)):
+		print 'Carte : tete=' + str(montabCarte[x].tete) + ' symbole=' + str(montabCarte[x].symbole) + ' valeur=' + str(montabCarte[x].valeur)
+		if montabCarte[x].tete == 0:
+			print 'Carte Delete : symbole=' + str(montabCarte[x].symbole) +' valeur=' + str(montabCarte[x].valeur)
+			montabCarte.remove(montabCarte[x])
+
+
+	print 'Tableau sorti : ' + str(montabCarte)
 	"""
-	print 'Tableau : ' + str(montab)
 
-	del montab[0]
-
-	print montab
-	"""
-
-	print test.__doc__
+	#print test.__doc__
 	print ''
 
 	print '######## FIN DU PROGRAMME ########'
