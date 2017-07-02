@@ -65,7 +65,7 @@ def generateregle():
 
     # Plusieurs règles ?
     #nbregle = random.randint(1, 4)
-    nbregle = 4
+    nbregle = 2
     if nbregle == 1:
         regle = 1
     elif nbregle == 2:
@@ -101,11 +101,13 @@ def testParite(carteParite):
 
     if not iscardpair(carteParite) and parite == 1:
         print ('carte impair; regle respectee')
+        validiteParite = 1
     elif not iscardpair(carteParite) and parite == 0:
         print ('carte impair; regle non respectee')
 
 def testCouleur(carteCouleur):
     global validiteCouleur
+    global couleur
     if iscardnoir(carteCouleur) and couleur == 0:
         print ('carte noir; regle respectee')
         validiteCouleur = 1
@@ -136,10 +138,13 @@ def testInferieurEtSuperieur(carteInferieur):
                 print ('NO : Valeur devrait etre inferieur pour la regle superiorite')
             if valueDeLaCarte > nbSuperieur:
                 print ('YES : Regle superieur respectee')
+                validiteSuperieur = 1
+
             if valueDeLaCarte > nbInferieur:
                 print ('NO : Valeur devrait etre superieur pour la regle inferiorite')
             if valueDeLaCarte < nbInferieur:
                 print ('YES : Regle inferieur respectee')
+                validiteInferieur = 1
 
     # Random entre Superieur et Inferieur
     intRandom = random.randint(0,1)
@@ -300,8 +305,6 @@ def isCardPlayedValidAndMaybeProphete():
                 print'Un joueur a joué une carte!!! '
                 print('')
 
-                # TODO: Get ALL CARDS FROM PLAYER WHO SAYS HE IS PROPHETE
-
                 for x in getCardJson['cards']:
 
                     carteTmp = Carte(x[0], x[1])
@@ -333,10 +336,28 @@ def isCardPlayedValidAndMaybeProphete():
                         testInferieurEtSuperieur(carteTmp)
                         testEgaliteCard(carteTmp)
 
-                    if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1  and validiteEgalite == 1:
-                        print ('')
-                        #TODO: POST si LA carte est bonne !! > ?
-                        print (x,' : carte valide')
+                    if regle == 1:
+                        if validiteCouleur == 1:
+                            print ('')
+                            #TODO: POST si LA carte est bonne !! > ?
+                            print (x,' : carte valide')
+                    if regle == 2:
+                        print ('Validité parité : ', validiteParite)
+                        print ('Validité couelur : ', validiteCouleur)
+                        if validiteCouleur == 1 and validiteParite == 1:
+                            print ('dioehzouchbzeouc')
+                            # TODO: POST si LA carte est bonne !! > ?
+                            print (x, ' : carte valide')
+                    if regle == 3:
+                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1:
+                            print ('')
+                            # TODO: POST si LA carte est bonne !! > ?
+                            print (x, ' : carte valide')
+                    if regle == 4:
+                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
+                            print ('')
+                            # TODO: POST si LA carte est bonne !! > ?
+                            print (x, ' : carte valide')
         break
 
 # Main
