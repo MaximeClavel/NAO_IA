@@ -1,7 +1,9 @@
 # coding: utf-8
 import random
 import json
+
 import requests
+from ast import literal_eval
 
 from Carte import *
 
@@ -42,7 +44,7 @@ def generateregle():
     couleur = random.randint(0,1)
 
     #Set regle card egalité random
-     #nbEgalite = random.randint(1,13)
+    #nbEgalite = random.randint(1,13)
 
     if parite == 0:
         print ('règle paire')
@@ -55,15 +57,15 @@ def generateregle():
         print ('règle rouge')
 
     setRegleInferieurOrAndSuperieur()
-    print ('regle superieur a ', nbSuperieur)
     print ('regle inferieur a ', nbInferieur)
+    print ('regle superieur a ', nbSuperieur)
 
     if nbEgalite != 0:
         print ('la valeur de la carte doit etre de = ', nbEgalite)
 
-
     # Plusieurs règles ?
-    nbregle = random.randint(1, 4)
+    #nbregle = random.randint(1, 4)
+    nbregle = 4
     if nbregle == 1:
         regle = 1
     elif nbregle == 2:
@@ -86,7 +88,6 @@ def setRegleInferieurOrAndSuperieur():
     global nbSuperieur
     nbSuperieur = random.randint(1, 13)
     nbInferieur = random.randint(1, 13)
-
 
 def testParite(carteParite):
     global validiteParite
@@ -123,20 +124,22 @@ def testInferieurEtSuperieur(carteInferieur):
 
     # Multi check
     if regle == 4:
-        if carteInferieur.valeur > nbSuperieur and carteInferieur.valeur < nbInferieur:
+        valueDeLaCarte = int(carteInferieur.valeur)
+
+        if valueDeLaCarte > nbSuperieur and valueDeLaCarte < nbInferieur:
             print ('carte de valeur inferieur; regle respecte')
             print ('carte de valeur superieur; regle respecte')
             validiteInferieur = 1
             validiteSuperieur = 1
-        elif carteInferieur.valeur < nbSuperieur and carteInferieur.valeur < nbInferieur:
-            print ('Valeur devrait etre superieur')
         else:
-            print('carte de valeur superieur; regle respectee > val carte > ', carteInferieur.valeur)
-
-        if carteInferieur.valeur > nbSuperieur and carteInferieur.valeur > nbInferieur:
-            print ('Valeur devrait etre inferieur')
-        else:
-            print ('carte de valeur inferieur; regle respectee > val carte > ', carteInferieur.valeur)
+            if valueDeLaCarte < nbSuperieur:
+                print ('NO : Valeur devrait etre inferieur pour la regle superiorite')
+            if valueDeLaCarte > nbSuperieur:
+                print ('YES : Regle superieur respectee')
+            if valueDeLaCarte > nbInferieur:
+                print ('NO : Valeur devrait etre superieur pour la regle inferiorite')
+            if valueDeLaCarte < nbInferieur:
+                print ('YES : Regle inferieur respectee')
 
     # Random entre Superieur et Inferieur
     intRandom = random.randint(0,1)
@@ -303,7 +306,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.symbole, carteTmp.symbole , ' > Carte tmp')
+                    print (carteTmp.symbole, carteTmp.valeur , ' > Carte tmp')
 
                     print ('')
 
