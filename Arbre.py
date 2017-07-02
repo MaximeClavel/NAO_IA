@@ -180,3 +180,6 @@ class Arbre:
                     tab = [valeur, Noeud(noeudPrecedent, attribut, 1, 0)]
                     noeudPrecedent.tabShield.append(tab)
 
+
+    def testCarte(self, maCarte):
+        self.monNoeud.testCarte(maCarte)
