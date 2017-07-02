@@ -294,11 +294,11 @@ def isCardPlayedValidAndMaybeProphete():
                 urlProphete = 'http://79.137.38.211/api/public/index.php/tristan'
                 if boolProphete:
                     requests.post(urlProphete, True)
-                    print ('True : La main du joueur fait qu il est prophete')
+                    print ('True : La main du joueur fait qu il est tristan')
 
                 elif boolProphete:
                     requests.post(urlProphete, False)
-                    print ('False : La main du joueur fait qu il n est prophete')
+                    print ('False : La main du joueur fait qu il n est tristan')
 
             # If test Une carte SANS prophete
             else:
