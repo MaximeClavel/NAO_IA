@@ -79,7 +79,7 @@ def generateregle():
 
     # Nb Règles definies au hasard
     print ('')
-    print 'Nombre de regle : ', regle
+    print ('Nombre de regle : ', regle)
     print ('')
 
 # Instance des nombres inferieur et superieur
@@ -251,11 +251,12 @@ def isCardPlayedValidAndMaybeProphete():
             # If joueur dit PROOOPPHHETEE
             elif getCardJson and getCardJson['turn'] == '0':
                 print ('Le joueur DIT PROOOPPHHETTEE')
+
                 for x in getCardJson['cards']:
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.symbole, carteTmp.valeur, ' > Carte tmp')
+                    print (carteTmp.symbole, carteTmp.valeur, ' : Carte tmp')
 
                     print ('')
 
@@ -282,13 +283,43 @@ def isCardPlayedValidAndMaybeProphete():
                         testInferieurEtSuperieur(carteTmp)
                         testEgaliteCard(carteTmp)
 
-                    if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1 and validiteEgalite == 1:
-                        print ('')
-                        print ('carte valide')
-                    else:
-                        print ('')
-                        boolProphete = False
-                        break
+                    # Test des cartes dans la boucle FOR
+                    if regle == 1:
+                        if validiteCouleur == 1:
+                            print ('')
+                            print (x, ' : carte valide 1 regle')
+                        else:
+                            print ('')
+                            boolProphete = False
+                            print ('UNLUCKY')
+                            break
+                    if regle == 2:
+                        if validiteCouleur == 1 and validiteParite == 1:
+                            print ('')
+                            print (x, ' : carte valide 2 regle')
+                        else:
+                            print ('')
+                            boolProphete = False
+                            print ('UNLUCKY')
+                            break
+                    if regle == 3:
+                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1:
+                            print ('')
+                            print (x, ' : carte valide 3 regles')
+                        else:
+                            print ('')
+                            boolProphete = False
+                            print ('UNLUCKY')
+                            break
+                    if regle == 4:
+                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
+                            print ('')
+                            print (x, ' : carte valide 4 regles')
+                        else:
+                            print ('')
+                            boolProphete = False
+                            print ('UNLUCKY')
+                            break
 
                 # Retour du POST pour prophete
                 urlProphete = 'http://79.137.38.211/api/public/index.php/tristan'
@@ -309,7 +340,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.symbole, carteTmp.valeur , ' > Carte tmp')
+                    print (carteTmp.symbole, carteTmp.valeur , ' : Carte tmp')
 
                     print ('')
 
