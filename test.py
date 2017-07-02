@@ -33,3 +33,65 @@ initID3([['angine-erythemateuse', 'elevee', 'gonflees', 'oui', 'oui', 'non', 'no
 
 # construit l'arbre de décision
 construitArbreDecision()
+
+
+
+
+
+
+
+def filter(self, ptableau, attribut, valeur):
+
+   "Retourne un tableau qui garde seulement les cartes qui on la valeur 'valeur' pour leur attribut 'attribut'"
+   
+   tableau = ptableau
+
+   tailleTab = len(tableau)
+
+   if attribut == 'tete':
+   
+      for x in range(0,tailleTab):
+         
+         if tableau[x].tete != valeur:
+            tableau.remove(tableau[x])
+
+   if attribut == 'symbole':
+
+      for x in range(0,tailleTab):
+         
+         if tableau[x].symbole != valeur:
+            tableau.remove(tableau[x])
+
+   if attribut == 'valeur':
+
+      for x in range(0,tailleTab):
+         
+         if tableau[x].valeur != valeur:
+            tableau.remove(tableau[x])
+
+   if attribut == 'couleur':
+
+      for x in range(0,tailleTab):
+         
+         if tableau[x].couleur != valeur:
+            tableau.remove(tableau[x])
+
+   if attribut == 'parite':
+
+      for x in range(0,tailleTab):
+         
+         if tableau[x].parite != valeur:
+            tableau.remove(tableau[x])
+
+
+
+   return tableau
+
+
+
+
+
+
+
+
+
