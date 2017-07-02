@@ -289,8 +289,6 @@ def isCardPlayedValidAndMaybeProphete():
                         if validiteCouleur == 1:
                             print ('')
                             print (x, ' : carte valide 1 regle')
-                        else:
-                            print ('')
                             boolProphete = False
                             print ('UNLUCKY')
                             break
@@ -298,8 +296,6 @@ def isCardPlayedValidAndMaybeProphete():
                         if validiteCouleur == 1 and validiteParite == 1:
                             print ('')
                             print (x, ' : carte valide 2 regle')
-                        else:
-                            print ('')
                             boolProphete = False
                             print ('UNLUCKY')
                             break
@@ -307,17 +303,14 @@ def isCardPlayedValidAndMaybeProphete():
                         if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1:
                             print ('')
                             print (x, ' : carte valide 3 regles')
-                        else:
-                            print ('')
                             boolProphete = False
                             print ('UNLUCKY')
                             break
+
                     if regle == 4:
                         if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
                             print ('')
                             print (x, ' : carte valide 4 regles')
-                        else:
-                            print ('')
                             boolProphete = False
                             print ('UNLUCKY')
                             break
@@ -328,7 +321,7 @@ def isCardPlayedValidAndMaybeProphete():
                     requests.post(urlProphete, True)
                     print ('True : La main du joueur fait qu il est tristan')
 
-                elif boolProphete:
+                elif not boolProphete:
                     requests.post(urlProphete, False)
                     print ('False : La main du joueur fait qu il n est tristan')
 
