@@ -67,7 +67,7 @@ def jouerCoup(CarteAjouer):
 	
 	global monprint
 
-	monprint += 'AVANT ENVOI CarteCouleur :' + str(CarteAjouer.attribut) + ' CarteValeur :' + str(CarteAjouer.valeur)
+	monprint += 'AVANT ENVOI CarteCouleur :' + str(CarteAjouer.symbole) + ' CarteValeur :' + str(CarteAjouer.valeur)
 	playcard = {'card_to_play': [CarteAjouer.attribut,CarteAjouer.valeur]}
 	reqPost = requests.post(url+url_jouerCoup, json=playcard)
 	
@@ -166,14 +166,14 @@ def getHand():
 if __name__ == '__main__':
 
 	
-	maCarte = Carte(0,8)
+	maCarte = Carte(0,13)
 
 	gListeMain.append(maCarte)
 
 	print gListeMain
 	print''
 
-
+	montab = ['Tete','tab','mesboules']
 
 	url='http://79.137.38.211/api/public/index.php/'
 	url_jouerCoup='jouercoup'
@@ -189,7 +189,16 @@ if __name__ == '__main__':
 
 
 	#Récupère les carte et joue le coup lorsque c'est à nous de jouer
-	getHand()
+	#getHand()
+
+	#print 'Valeur de la tete de ma carte : ' + str(maCarte.getValueForAttribute('tete'))
+
+	print 'Tableau : ' + str(montab)
+
+	del montab[0]
+
+	print montab
+
 
 	print '######## FIN DU PROGRAMME ########'
 
