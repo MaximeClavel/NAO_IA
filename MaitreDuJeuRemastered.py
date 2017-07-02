@@ -90,12 +90,18 @@ def setRegleInferieurOrAndSuperieur():
 
 def testParite(carteParite):
     global validiteParite
+    global parite
     print ('')
-    if iscardpair(carteParite):
-        print ('Carte impaire; regle respectee')
+    if iscardpair(carteParite) and parite == 0:
+        print ('Carte pair; regle respectee')
         validiteParite = 1
-    else:
-        print ('carte pair; regle non respectee')
+    elif iscardpair(carteParite) and parite == 1:
+        print ('Carte pair; regle non respectee')
+
+    if not iscardpair(carteParite) and parite == 1:
+        print ('carte impair; regle respectee')
+    elif not iscardpair(carteParite) and parite == 0:
+        print ('carte impair; regle non respectee')
 
 def testCouleur(carteCouleur):
     global validiteCouleur
@@ -168,7 +174,7 @@ def iscardpair(cartePairImpair):
 
 # Couleur
 def iscardnoir(carteNioirTest):
-    if carteNioirTest.couleur == 0:
+    if carteNioirTest.couleur == 0 or  carteNioirTest.couleur == 3:
         return True
     else:
         return False
@@ -241,7 +247,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.valeur, carteTmp.symbole, ' > Carte tmp')
+                    print (carteTmp.symbole, carteTmp.valeur, ' > Carte tmp')
 
                     print ('')
 
@@ -297,7 +303,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.valeur, carteTmp.symbole , ' > Carte tmp')
+                    print (carteTmp.symbole, carteTmp.symbole , ' > Carte tmp')
 
                     print ('')
 
