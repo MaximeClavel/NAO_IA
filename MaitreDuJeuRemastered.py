@@ -53,8 +53,7 @@ def generateregle():
 
 
     # Plusieurs règles ?
-    #nbregle = random.randint(1, 4)
-    nbregle = 4
+    nbregle = random.randint(1, 4)
 
     if nbregle == 1:
         regle = 1
@@ -213,7 +212,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.valeur, carteTmp.attribut, ' > Carte tmp')
+                    print (carteTmp.valeur, carteTmp.symbole, ' > Carte tmp')
 
                     print ('')
 
@@ -262,7 +261,7 @@ def isCardPlayedValidAndMaybeProphete():
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.valeur, carteTmp.attribut , ' > Carte tmp')
+                    print (carteTmp.valeur, carteTmp.symbole , ' > Carte tmp')
 
                     print ('')
 
@@ -287,7 +286,6 @@ def isCardPlayedValidAndMaybeProphete():
                         print ('')
                         #TODO: POST si LA carte est bonne !! > ?
                         print (x,' : carte valide')
-
         break
 
 # Main
