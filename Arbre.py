@@ -7,7 +7,7 @@ class Arbre:
 
     def __init__(self, exemplesVrai, exemplesFaux):
         
-        self.monNoeud = Noeud
+        self.monNoeud = 
 
         self.tabNoeudPossible = ['tete','valeur','parite','couleur','symbole']
 
@@ -31,7 +31,7 @@ class Arbre:
         self.noeudCourant = 'root'
         self.valueNoeudCourant = 0.0
 
-
+        
 
 
     def filter(self, ptableau, attribut, valeur):
@@ -90,11 +90,11 @@ class Arbre:
 
         
         for cV in listCardVrai:
-            if cV.getValueForAttribute(attributCard) == valeur and cV.getValueForAttribute(currentNode) == currentNodeValue or currentNode == 'root'
+            if cV.getValueForAttribute(attributCard) == valeur and cV.getValueForAttribute(currentNode) == currentNodeValue or currentNode == 'root':
                 pOui = pOui + 1
 
         for cF in listCardFaux:
-            if cF.getValueForAttribute(attributCard) == valeur and cF.getValueForAttribute(currentNode) == currentNodeValue or currentNode == 'root'
+            if cF.getValueForAttribute(attributCard) == valeur and cF.getValueForAttribute(currentNode) == currentNodeValue or currentNode == 'root':
                 pNon = pNon + 1
                             
         
