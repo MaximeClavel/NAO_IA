@@ -44,7 +44,8 @@ class Carte: # Définition de notre classe Carte
         
 
         """  Permet de définir la couleur de la carte en fonction de son symbole """
-        if self.symbole == 0 or self.symbole == 3:
+        symboleInt = int(self.symbole)
+        if symboleInt == 0 or symboleInt == 3:
             self.couleur = 0 #Carte Noir
         else:
             self.couleur = 1 #Carte Rouge

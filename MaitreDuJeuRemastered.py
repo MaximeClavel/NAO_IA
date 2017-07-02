@@ -43,9 +43,6 @@ def generateregle():
     parite = random.randint(0,1)
     couleur = random.randint(0,1)
 
-    #Set regle card egalité random
-    #nbEgalite = random.randint(1,13)
-
     if parite == 0:
         print ('règle paire')
     else:
@@ -56,15 +53,25 @@ def generateregle():
     else:
         print ('règle rouge')
 
-    setRegleInferieurOrAndSuperieur()
-    print ('regle inferieur a ', nbInferieur)
-    print ('regle superieur a ', nbSuperieur)
+    randomSuperieurInferieurOuEGALE = random.randint(0,1)
+
+    if randomSuperieurInferieurOuEGALE == 1:
+        setRegleInferieurOrAndSuperieur()
+        print ('regle inferieur a ', nbInferieur)
+        print ('regle superieur a ', nbSuperieur)
+    else:
+        # Set regle card egalité random
+        nbEgalite = random.randint(1, 13)
 
     if nbEgalite != 0:
         print ('la valeur de la carte doit etre de = ', nbEgalite)
 
     # Plusieurs règles ?
-    #nbregle = random.randint(1, 4)
+
+    if randomSuperieurInferieurOuEGALE == 1:
+        nbregle = random.randint(1, 4)
+    else:
+        nbregle = random.randint(1, 3)
     nbregle = 2
     if nbregle == 1:
         regle = 1
@@ -112,12 +119,12 @@ def testCouleur(carteCouleur):
         print ('carte noir; regle respectee')
         validiteCouleur = 1
     elif iscardnoir(carteCouleur) and couleur == 1:
-        print ('carte noir; regle non respectee')
+        print ('regle non respectee')
 
     if not iscardnoir(carteCouleur) and couleur == 1:
-        validiteCouleur = 1
         print ('carte rouge; regle respectee')
-    elif not iscardnoir(carteCouleur) and couleur == 0:
+        validiteCouleur = 1
+    elif not (iscardnoir(carteCouleur)) and couleur == 0:
         print ('carte rouge; regle non respectee')
 
 def testInferieurEtSuperieur(carteInferieur):
@@ -270,18 +277,12 @@ def isCardPlayedValidAndMaybeProphete():
                     if regle == 3:
                         testParite(carteTmp)
                         testCouleur(carteTmp)
-                        testInferieurEtSuperieur(carteTmp)
+                        testEgaliteCard(carteTmp)
 
                     if regle == 4:
                         testParite(carteTmp)
                         testCouleur(carteTmp)
                         testInferieurEtSuperieur(carteTmp)
-
-                    if regle == 5:
-                        testParite(carteTmp)
-                        testCouleur(carteTmp)
-                        testInferieurEtSuperieur(carteTmp)
-                        testEgaliteCard(carteTmp)
 
                     # Test des cartes dans la boucle FOR
                     if regle == 1:
@@ -354,18 +355,13 @@ def isCardPlayedValidAndMaybeProphete():
                     if regle == 3:
                         testParite(carteTmp)
                         testCouleur(carteTmp)
-                        testInferieurEtSuperieur(carteTmp)
+                        testEgaliteCard(carteTmp)
 
                     if regle == 4:
                         testParite(carteTmp)
                         testCouleur(carteTmp)
                         testInferieurEtSuperieur(carteTmp)
 
-                    if regle == 5:
-                        testParite(carteTmp)
-                        testCouleur(carteTmp)
-                        testInferieurEtSuperieur(carteTmp)
-                        testEgaliteCard(carteTmp)
 
                     # Set du return
                     urlValiditeCard = 'http://79.137.38.211/api/public/index.php/card_valid'
@@ -401,5 +397,7 @@ if __name__ == '__main__':
     while True:
         reqGetSpamTurn = requests.get(urlToSpamToPlay)
         if reqGetSpamTurn.status_code == 200:
-            if reqGetSpamTurn['nouveau_coup'] == '1':
+            getIfCardPlayed = json.loads(reqGetSpamTurn.text)
+            if getIfCardPlayed['nouveauCoup'] == 1:
+                print ('NOUVEAU COUP : ', getIfCardPlayed['nouveauCoup'])
                 isCardPlayedValidAndMaybeProphete()
