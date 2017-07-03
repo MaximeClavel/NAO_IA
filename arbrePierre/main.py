@@ -20,7 +20,7 @@ if __name__ == '__main__':
     print '####### CREATION DE L\'ARBRE ########'
     print ''
 
-    tabVrai = [Carte(0, 11), Carte(3, 9), Carte(3, 3), Carte(0, 10), Carte(0, 1), Carte(3, 1)]
+    tabVrai = [Carte(0, 11), Carte(3, 9), Carte(3, 3), Carte(0, 10), Carte(0, 1), Carte(3, 1), Carte(1, 12)]
     tabFaux = [Carte(1, 5), Carte(1, 1), Carte(1, 13), Carte(2, 8), Carte(1, 9), Carte(2, 11)]
     arbre = Arbre(tabVrai, tabFaux)
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     print ''
 
     possibleNodes = ['parite', 'tete', 'couleur', 'symbole']
-    arbre.construire(tabVrai, tabFaux, 'root', 0, possibleNodes)
+    arbre.construire(tabVrai, tabFaux, 'root', 0, possibleNodes, '')
 
     print ''
     print '####### ARBRE CONSTRUIT #######'
@@ -48,6 +48,7 @@ if __name__ == '__main__':
     arbre.testCarte(maCarte5)
     arbre.testCarte(maCarte6)
 
+    print ''
     print '####### CARTE TESTEE #######'
     print ''
 

@@ -96,6 +96,7 @@ class Arbre:
                 while x < len(tableau):
                     if tableau[x].tete != valeur:
                         tableau.remove(tableau[x])
+                        x = x - 1
                     x = x + 1
 
             if attribut == 'symbole':
@@ -103,6 +104,7 @@ class Arbre:
                 while x < len(tableau):
                     if tableau[x].symbole != valeur:
                         tableau.remove(tableau[x])
+                        x = x - 1
                     x = x + 1
 
             if attribut == 'valeur':
@@ -110,6 +112,7 @@ class Arbre:
                 while x < len(tableau):
                     if tableau[x].valeur != valeur:
                         tableau.remove(tableau[x])
+                        x = x - 1
                     x = x + 1
 
             if attribut == 'couleur':
@@ -117,6 +120,7 @@ class Arbre:
                 while x < len(tableau):
                     if tableau[x].couleur != valeur:
                         tableau.remove(tableau[x])
+                        x = x - 1
                     x = x + 1
 
             if attribut == 'parite':
@@ -124,30 +128,38 @@ class Arbre:
                 while x < len(tableau):
                     if tableau[x].parite != valeur:
                         tableau.remove(tableau[x])
+                        x = x - 1
                     x = x + 1
 
         return tableau
 
 
     def hasValue(self, array, attribut, valeur):
-        print array
-        print 'hasValue avec attribut : ' + attribut + ' avec valeur : ' + str(valeur)
         for carte in array:
-            print 'Carte : '
-            print carte.getValueForAttribute(attribut)
             if carte.getValueForAttribute(attribut) == valeur:
                 return 1
 
         return 0
 
 
-    def construire(self, tabVrai, tabFaux, attribut, valeur, noeudsPossibles):
+    def construire(self, tabVrai, tabFaux, attribut, valeur, noeudsPossibles, parent):
         print 'Valeur : ' + str(valeur )
         arrayTrue = self.filter(tabVrai, attribut, valeur)
         arrayFalse = self.filter(tabFaux, attribut, valeur)
         # Si le noeud courant est terminal on set le noeud en tant que feuille et on return
         if self.noeudCourant.isTerminal(arrayTrue, arrayFalse) == 1:
+            print 'attribut : ' + attribut
+            noeudTmp = Noeud(attribut)
+            noeudTmp.isLeaf = 1
+            if len(arrayTrue) > 0:
+                noeudTmp.resultat = 1
+            else:
+                noeudTmp.resultat = 0
+            tabTmp = [valeur, noeudTmp]
+            print 'Fin isTerminal --- isLeaf => ' + str(noeudTmp.isLeaf) + ' --- resultat => ' + str(noeudTmp.resultat)
+            self.noeudCourant.children.append(tabTmp)
             print 'Feuille trouvée'
+            self.noeudCourant = parent
         else:
             # Créer un noeud et continuer l'algorithme
             tabPertinence = self.getHighestPertinence(tabVrai, tabFaux, noeudsPossibles)
@@ -157,22 +169,22 @@ class Arbre:
             if self.isRoot == 1:
                 self.noeud = Noeud(pertinence)
                 self.noeudCourant = self.noeud
+                parent = self.noeudCourant
                 print 'Racine créée avec attribut : ' + pertinence
                 self.isRoot = 0
             else:
                 noeudTmp = Noeud(pertinence)
                 tabTmp = [valeur, noeudTmp]
                 self.noeudCourant.children.append(tabTmp)
-                self.noeudCourant = noeudTmp
+                parent = self.noeudCourant
+                self.noeudCourant = self.noeudCourant.children[len(self.noeudCourant.children) - 1][1]
                 print 'Noeud créé avec attribut : ' + pertinence
 
             # Pour toutes les valeurs existantes dans les exemples de l'attribut considéré comme pertinent
             # Construire la suite
             length = self.switchPossibleNode(pertinence)
-            print 'Length : ' + str(length)
+
             for i in range(0, length):
-                print 'i : ' + str(i) + ' Attribut : ' + pertinence
-                print arrayTrue
                 arrayTrueTmp = []
                 for elem in arrayTrue:
                     arrayTrueTmp.append(elem)
@@ -183,13 +195,10 @@ class Arbre:
                 for elemNodes in tabPertinence[1]:
                     arrayPossibleNodesTmp.append(elemNodes)
 
-                print 'Tableau noeuds possibles'
-                print arrayPossibleNodesTmp
-
                 if self.hasValue(arrayTrueTmp, pertinence, i) == 1:
-                    self.construire(arrayTrueTmp, arrayFalseTmp, pertinence, i, arrayPossibleNodesTmp)
+                    self.construire(arrayTrueTmp, arrayFalseTmp, pertinence, i, arrayPossibleNodesTmp, parent)
                 elif self.hasValue(arrayFalseTmp, pertinence, i) == 1:
-                    self.construire(arrayTrueTmp, arrayFalseTmp, pertinence, i, arrayPossibleNodesTmp)
+                    self.construire(arrayTrueTmp, arrayFalseTmp, pertinence, i, arrayPossibleNodesTmp, parent)
         print 'Fin de fonction'
 
     def testCarte(self, carte):
