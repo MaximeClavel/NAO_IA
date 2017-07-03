@@ -36,51 +36,72 @@ clear = lambda: os.system('clear')
 
 
 #** GET BEST CARD **#
-def getBestCard(index, ListeMain):
+def getBestCard():
 
 	global gListeMain
 	global gListeVrai
 	global gListeFaux
+	global monprint
 
 
 	##** ARBRE DE DECISION **##
+	tabCartesMain = []
+	tailleTabMain = len(gListeMain)
 
+	for n in range(0,tailleTabMain):
+		carteMain = Carte(int(gListeMain[n][0]), int(gListeMain[n][1])) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
+		tabCartesMain.append(carteMain)
+
+	monprint+= str(gListeVrai) + '\r\n'
+	monprint+= str(gListeFaux) + '\r\n'
+	print monprint
 	#carteAjouer = Carte(0,9)
+	if gListeVrai == None or gListeFaux == None:
+		monprint+= 'Je joue la première carte \r\n'
+		print monprint
+		carteAjouer = tabCartesMain[0]
+		return carteAjouer
 
 	#TabCartesVrai à passer à l'arbre
 	tabCartesVrai = []
 	tabCartesFaux = []
-	tabCartesMain = []
+	
 
 	tailleTabVrai = len(gListeVrai)
 	tailleTabFaux = len(gListeFaux)
-	tailleTabMain = len(gListeMain)
+	
+
+	totalCartePose = tailleTabVrai + tailleTabFaux
+
+	carteAJouerUn = []
+	carteAJouerMoinsUn = []
 
 	print 'Ma main'
 	print gListeMain
 	print ''
-
+	"""
 	for i in range(0,5):
 		print gListeMain[i] 	#Ceci affiche chaque carte de la main
 		print gListeMain[i][0]	#SYMBOLE DE LA CARTE
 		print gListeMain[i][1]	#NUMERO DE LA CARTE
-
+	"""
 
 	#On rempli un tablaeu d'instance de carte suivant les tableaux reçus depuis l'API
 	for j in range(0,tailleTabVrai):
-		carteVrai = Carte(gListeVrai[j][0], gListeVrai[j][1]) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
+		carteVrai = Carte(int(gListeVrai[j][0]), int(gListeVrai[j][1])) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
 		tabCartesVrai.append(carteVrai)
 
 	for k in range(0,tailleTabFaux):
-		carteFaux = Carte(gListeFaux[k][0], gListeFaux[k][1]) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
+		carteFaux = Carte(int(gListeFaux[k][0]), int(gListeFaux[k][1])) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
 		tabCartesFaux.append(carteFaux)
 
-	for n in range(0,tailleTabMain):
-		carteMain = Carte(gListeMain[n][0], gListeMain[n][1]) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
-		tabCartesMain.append(carteMain)
+	
 
 
 	possibleNodes = ['parite', 'tete', 'couleur', 'symbole']
+	monprint+= 'Tableau Vrai passé à l arbre : ' + str(tabCartesVrai) +' Tableau Faux : ' + str(tabCartesFaux) + '\r\n'
+	
+
 
 	monArbre = Arbre(tabCartesVrai, tabCartesFaux)
 
@@ -95,23 +116,57 @@ def getBestCard(index, ListeMain):
 	print gListeVrai 
 	print 'Tableau FAUX : '
 	print gListeFaux
+	
 	for l in range(0,len(tabCartesMain)):
 		
-		print 'TEST de la carte [symbole : ' + str(tabCartesMain[l].symbole) + ', valeur : ' + str(tabCartesMain[l].valeur) + ']'
+		monprint+= 'TEST de la carte [symbole : ' + str(tabCartesMain[l].symbole) + ', valeur : ' + str(tabCartesMain[l].valeur) + ']\r\n'
+		print monprint
 		monArbre.testCarte(tabCartesMain[l])
-		print ' > Poids : ' + str(tabCartesMain[l].poids)
-		
+		monprint+= ' > Poids : ' + str(tabCartesMain[l].poids) + '\r\n'
+		print monprint
 
+	#sleep(15)
+	
+	unCard = 0
+	zero = 0
+	moinsUn = 0
 
-	"""
 	for m in range(0,len(tabCartesMain)):
 
-		if tabCartesMain[m].poids == 1
+		if tabCartesMain[m].poids == 1:
+			#carteCertaine= tabCartesMain[m]
+			#carteAjouer = tabCartesMain[m]
+			carteAJouerUn.append(tabCartesMain[m])
+			unCard = unCard + 1
 
-			carteAjouer = tabCartesMain[m]
-	"""
 
-	sleep(15)
+		elif tabCartesMain[m].poids == 0:
+			zero = zero + 1
+
+		elif tabCartesMain[m].poids == -1:
+			carteAJouerMoinsUn.append(tabCartesMain[m])
+			moinsUn = moinsUn + 1
+	
+	
+	if len(carteAJouerUn) > 0:
+		carteAjouer = carteAJouerUn[0]
+
+	elif zero == len(tabCartesMain):
+		carteAjouer = Carte(0,0) #PROPHETE
+
+	elif zero <= 3 and moinsUn <=2 and unCard ==0 and totalCartePose >= 12:
+		carteAjouer = Carte(0,0) #PROPHETE
+	
+	elif len(carteAJouerMoinsUn) > 0:
+		carteAjouer = carteAJouerMoinsUn[0]
+	else:
+		print 'Je ne sais pas quoi jouer'
+
+	
+
+	#if 3 >= zero and 
+
+	
 
 	"""
 	with HandJson['hand'] as data_hand :
@@ -131,7 +186,7 @@ def jouerCoup(CarteAjouer):
 	global monprint
 
 	monprint += 'AVANT ENVOI CarteCouleur :' + str(CarteAjouer.symbole) + ' CarteValeur :' + str(CarteAjouer.valeur)
-	playcard = {'card_to_play': [CarteAjouer.attribut,CarteAjouer.valeur]}
+	playcard = {'card_to_play': [CarteAjouer.symbole,CarteAjouer.valeur]}
 	reqPost = requests.post(url+url_jouerCoup, json=playcard)
 	
 	"""
@@ -158,6 +213,8 @@ def getHand():
 	global gListeMain
 	global gListeVrai
 	global gListeFaux
+
+
 	index = 0
 
 	while True:
@@ -175,36 +232,31 @@ def getHand():
 				print'Someone is PROPHETE'
 				return
 
-			#if getHandJson['turn'] == '4':
-			print''
-			print 'A nous de jouer !'
-			
-			#Récupération de la liste main
-			gListeMain = getHandJson['hand']
-			print gListeMain
-			#Récupération de la liste vrai
-			gListeVrai = getHandJson['truth_list']
-			#Récupération de la liste faux
-			gListeFaux = getHandJson['wrong_list']
+			if getHandJson['turn'] == '4':
+				print''
+				print 'A nous de jouer !'
+				
+				#Récupération de la liste main
+				gListeMain = getHandJson['hand']
+				print gListeMain
+				#Récupération de la liste vrai
+				gListeVrai = getHandJson['truth_list']
+				#Récupération de la liste faux
+				gListeFaux = getHandJson['wrong_list']
 
-			#concatListes(gListeVrai,gListeFaux)
+				#concatListes(gListeVrai,gListeFaux)
 
-			#Lancer la fonction d'arbres décisionnel ici
-			#Si c'est à nous de jouer alors
-			#Arbre de décision à lancer
-			carteAJouer = getBestCard(index, gListeMain)
-			index += 1#randrange(5)
+				#Lancer la fonction d'arbres décisionnel ici
+				#Si c'est à nous de jouer alors
+				#Arbre de décision à lancer
+				carteAJouer = getBestCard()
+				#index += 1#randrange(5)
 
-			jouerCoup(carteAJouer)
+				jouerCoup(carteAJouer)
 
-			print''
-			monprint += 'Carte joué : ' + ' attribut=' + str(carteAJouer.attribut) + ' & valeur=' + str(carteAJouer.valeur) + '\r\n'
-			print monprint
-
-		else:
-			print''
-			print('Reponse ' + str(reqGetHand.status_code) + ' du serveur.')
-"""
+				print''
+				monprint += ' Carte joué : ' + ' symbole=' + str(carteAJouer.symbole) + ' & valeur=' + str(carteAJouer.valeur) + '\r\n'
+				print monprint
 			elif getHandJson['turn'] == -1:
 				clear()
 				print monprint
@@ -217,12 +269,11 @@ def getHand():
 				print ''
 				print 'En attente de notre tour...'
 
-"""
-			
-		
-						
-				
- 
+		else:
+			print''
+			print('Reponse ' + str(reqGetHand.status_code) + ' du serveur.')
+
+	
 
 def test():
 	"Fonction de test."

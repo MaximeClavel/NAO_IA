@@ -18,8 +18,9 @@ class Noeud:
             print ''
 
         for elem in self.children:
-            #print 'Attr : ' + self.attribut + ' Valeur : ' + str(value) + ' Element : ' + str(elem[0])
+            print 'Attr : ' + self.attribut + ' Valeur : ' + str(value) + ' Element : ' + str(elem[0])
             if str(value) == str(elem[0]):
+                print ' >GG'
                 elem[1].testCarte(carte)
         
         print ''
