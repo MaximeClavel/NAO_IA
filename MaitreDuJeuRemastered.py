@@ -21,9 +21,11 @@ validiteCouleur = 0
 validiteParite = 0
 validiteInferieur = 0
 validiteSuperieur = 0
+valideSuite = 0
 listReturned = []
 listRegleActive = []
 dictValueReglesActive = {}
+suiteCarteRegleOn = []
 # End definition regle
 
 boolProphete = True
@@ -44,12 +46,11 @@ def generateregle():
     global nbEgalite
     global listRsegleActive
     global dictValueReglesActive
-
+    global suiteCarteRegleOn
     # Plusieurs règles ?
     randomEgaliteOuPair = random.randint(0,1)
 
     nbregle = random.randint(1, 3)
-
     if nbregle == 1:
         nombreRegles = 1
     elif nbregle == 2:
@@ -62,15 +63,22 @@ def generateregle():
     print ('Nombre de regle : ', nombreRegles)
     print ('')
 
-    # Set regle card egalité random
-
+    # Egalite
     nbEgalite = random.randint(1, 13)
-
     print ('EGALITE : la valeur de la carte doit etre de = ', nbEgalite)
     dictValueReglesActive = {'egalite':nbEgalite}
 
+    #Suite
+    suiteSens = random.randint(0, 1)
+    if suiteSens == 0:
+        print ('SUITE : decroissante')
+        dictValueReglesActive['suite'] = 'decroissante'
+    elif suiteSens == 1:
+        print ('SUITE : croissante')
+        dictValueReglesActive['suite'] = 'croissante'
+
+    # Parite
     parite = random.randint(0, 1)
-    couleur = random.randint(0, 1)
     if parite == 0:
         print ('PARITE : paire')
         dictValueReglesActive['parite'] = 'paire'
@@ -78,6 +86,8 @@ def generateregle():
         print ('PARITE : impaire')
         dictValueReglesActive['parite'] = 'impaire'
 
+    # Couleur
+    couleur = random.randint(0, 1)
     if couleur == 0:
         print ('COULEUR : noir')
         dictValueReglesActive['couleur'] = 'noir'
@@ -85,6 +95,7 @@ def generateregle():
         print ('COULEUR : rouge')
         dictValueReglesActive['couleur'] = 'rouge'
 
+    #Inferieur Superieur
     setRegleInferieurOrAndSuperieur()
     print ('INFERIEUR a ', nbInferieur)
     print ('SUPERIEUR a ', nbSuperieur)
@@ -92,7 +103,7 @@ def generateregle():
     dictValueReglesActive['superieur'] = nbSuperieur
     print ('')
     if nombreRegles == 1:
-        intRandom1 = random.randint(0, 3)
+        intRandom1 = random.randint(0, 5)
         if intRandom1 == 0:
             listRegleActive.append('parite')
             print ('REGLE SELECT : PARITE')
@@ -105,6 +116,12 @@ def generateregle():
         elif intRandom1 == 3:
             listRegleActive.append('infsup')
             print ('REGLE SELECT :  INFERIEUR SUPERIEUR')
+        elif intRandom1 == 4:
+            listRegleActive.append('suitedesc')
+            print ('REGLE SELECT :  SUITE DECROISSANTE')
+        elif intRandom1 == 5:
+            listRegleActive.append('suiteces')
+            print ('REGLE SELECT :  SUITE CROISSANTE')
 
     if nombreRegles == 2:
         intRandom2 = random.randint(0, 2)
@@ -131,7 +148,7 @@ def generateregle():
         print ('REGLE SELECT : PARITE')
         print ('REGLE SELECT : COULEUR')
         print ('REGLE SELECT : INFERIEUR SUPERIEUR')
-
+    print('')
 
 # Instance des nombres inferieur et superieur
 def setRegleInferieurOrAndSuperieur():
@@ -140,6 +157,35 @@ def setRegleInferieurOrAndSuperieur():
     nbSuperieur = random.randint(1, 12)
     nbInferieur = random.randint(nbSuperieur, 13)
 
+def testSuiteDecroissante(carteToTestForSuiteDecroissante):
+    global valideSuite
+    valueCarte = int(carteToTestForSuiteDecroissante.valeur)
+    if len(suiteCarteRegleOn) != 0:
+        suitMoins1 = int(suiteCarteRegleOn[-1].valeur)
+        if valueCarte == (suitMoins1-1):
+            # On ne set la liste que quand la regle est activé
+            if 'suitedesc' in listRegleActive or 'suiteces' in listRegleActive:
+                suiteCarteRegleOn.append(carteToTestForSuiteDecroissante)
+                valideSuite = 1
+        else:
+            valideSuite = 0
+    else:
+        suiteCarteRegleOn.append(carteToTestForSuiteDecroissante)
+
+def testSuiteCroissante(carteToTestForSuiteCroissante):
+    global valideSuite
+    valueCarte = int(carteToTestForSuiteCroissante.valeur)
+    if len(suiteCarteRegleOn) != 0:
+        suitePlusUn = int(suiteCarteRegleOn[-1].valeur)
+        if valueCarte == (suitePlusUn+1):
+            # On ne set la liste que quand la regle est activé
+            if 'suitedesc' in listRegleActive or 'suiteces' in listRegleActive:
+                suiteCarteRegleOn.append(carteToTestForSuiteCroissante)
+                valideSuite = 1
+        else:
+            valideSuite = 0
+    else:
+        suiteCarteRegleOn.append(carteToTestForSuiteCroissante)
 
 def testParite(carteParite):
     global validiteParite
@@ -306,7 +352,10 @@ def setRandomRegle(carteRdm):
             testEgaliteCard(carteRdm)
         elif x == 'infsup':
             testInferieurEtSuperieur(carteRdm)
-
+        elif x == 'suitedesc':
+            testSuiteDecroissante(carteRdm)
+        elif x == 'suiteces':
+            testSuiteCroissante(carteRdm)
 
 # Verification de la validite d'une seul carte
 def isCardPlayedValidAndMaybeProphete():
@@ -318,6 +367,7 @@ def isCardPlayedValidAndMaybeProphete():
     global boolProphete
     global dictValueReglesActive
     global listRegleActive
+    global suiteCarteRegleOn
 
     # Début du ping en folie
     while True:
@@ -332,17 +382,18 @@ def isCardPlayedValidAndMaybeProphete():
                 return
 
             # If joueur dit PROOOPPHHETEE
-            elif getCardJson and getCardJson['propheteChecked'] == '1':
+            elif getCardJson and getCardJson['propheteChecked'] == 1:
                 print ('Le joueur se DIT PROOOPPHHETTEE')
 
                 # Bool de traitement de plusieurs regles PROPHETE
-                cardValidForProphete = 0
+                cardValid = 0
+                cardValid2 = 0
 
-                for x in getCardJson['cards']:
+                for x in getCardJson['handPossibleTristan']:
 
                     carteTmp = Carte(x[0], x[1])
 
-                    print (carteTmp.symbole, carteTmp.valeur, ' : Carte tmp')
+                   # print (carteTmp.symbole, carteTmp.valeur, ' : Carte tmp')
 
                     print ('')
 
@@ -355,81 +406,92 @@ def isCardPlayedValidAndMaybeProphete():
                     if nombreRegles == 1:
                         if validiteSuperieur == 1 and validiteInferieur == 1:
                             print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
-                            cardValidForProphete = 1
+                            cardValid = 1
                         elif validiteCouleur == 1:
                             print ('')
-                            cardValidForProphete = 1
+                            cardValid = 1
                             print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
                         elif validiteParite == 1:
-                            cardValidForProphete = 1
+                            cardValid = 1
                             print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
                         elif validiteEgalite == 1:
-                            cardValidForProphete = 1
+                            cardValid = 1
+                            print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                        elif valideSuite == 1:
+                            cardValid = 1
                             print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
                         else:
-                            print ('YES : Il est prophete')
+                            print ('Carte valide pour la prophetisation')
 
                     if nombreRegles == 2:
                         for x in listRegleActive:
                             if x == 'parite':
                                 if validiteParite == 1:
-                                    cardValidForProphete = 1
-                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid2 = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
+                                elif validiteParite == 0:
+                                    print ('La prophetisation semble correct')
+
                             elif x == 'couleur':
                                 if validiteCouleur == 1:
-                                    cardValidForProphete = 1
-                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid2 = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
+                                elif validiteCouleur == 0:
+                                    print ('La prophetisation semble correct')
                             elif x == 'egalite':
                                 if validiteEgalite == 1:
-                                    cardValidForProphete = 1
-                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid2 = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
+                                elif validiteEgalite == 0:
+                                    print ('La prophetisation semble correct')
                             elif x == 'infsup':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
-                                    cardValidForProphete = 1
-                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid2 = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
+                                elif validiteInferieur == 0 or validiteSuperieur == 0:
+                                    print ('La prophetisation semble correct')
 
                     if nombreRegles == 3:
                         for y in listRegleActive:
                             if y == 'parite':
                                 if validiteParite == 1:
-                                    cardValidForProphete = 1
-                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
                             elif y == 'couleur':
                                 if validiteCouleur == 1:
-                                    cardValidForProphete = 1
-                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
                             elif y == 'egalite':
                                 if validiteEgalite == 1:
-                                    cardValidForProphete = 1
-                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
                             elif y == 'infsup':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
-                                    cardValidForProphete = 1
-                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    cardValid = 1
+                                    print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
 
-
-
                 # Retour du POST pour prophete
-                urlProphete = 'http://79.137.38.211/api/public/index.php/retour_tristan'
-                if cardValidForProphete == 1:
-                    requests.post(urlProphete, 1)
-                    print ('True : La main du joueur fait qu il est tristan')
-
-                elif cardValidForProphete == 0:
-                    requests.post(urlProphete, 0)
-                    print ('False : La main du joueur fait qu il N est tristan')
+                #urlProphete = 'http://79.137.38.211/api/public/index.php/setpropheteornot'
+                print ('')
+                if cardValid == 1 or cardValid2 == 1:
+                    #requests.post(urlProphete, 1)
+                    print ('FALSE : La main du joueur fait qu il n est pas tristan')
+                elif cardValid == 0 or cardValid2 == 0:
+                    #requests.post(urlProphete, 0)
+                    print ('TRUE : La main du joueur fait qu il  est TRISTAN')
 
             # If test Une carte SANS prophete
             else:
-                print'Un joueur a joué une carte!!! '
+                print('')
+                print'Un joueur a joué une carte'
                 print('')
 
                 for x in getCardJson['cards']:
@@ -458,6 +520,9 @@ def isCardPlayedValidAndMaybeProphete():
                             #requests.post(urlValiditeCard, True)
                             print (x, ' : carte valide')
                         elif validiteEgalite == 1:
+                            # requests.post(urlValiditeCard, True)
+                            print (x, ' : carte valide')
+                        elif valideSuite == 1:
                             # requests.post(urlValiditeCard, True)
                             print (x, ' : carte valide')
                         else:
@@ -553,3 +618,6 @@ if __name__ == '__main__':
             getIfCardPlayed = json.loads(reqGetSpamTurn.text)
             if getIfCardPlayed['nouveauCoup'] == 1:
                 isCardPlayedValidAndMaybeProphete()
+            elif getIfCardPlayed['propheteChecked'] == 1:
+                isCardPlayedValidAndMaybeProphete()
+                break
