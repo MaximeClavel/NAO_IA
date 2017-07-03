@@ -50,7 +50,8 @@ def generateregle():
     # Plusieurs règles ?
     randomEgaliteOuPair = random.randint(0,1)
 
-    nbregle = random.randint(1, 3)
+    # nbregle = random.randint(1, 3)
+    nbregle = 1
     if nbregle == 1:
         nombreRegles = 1
     elif nbregle == 2:
@@ -479,14 +480,16 @@ def isCardPlayedValidAndMaybeProphete():
                                     break
 
                 # Retour du POST pour prophete
-                #urlProphete = 'http://79.137.38.211/api/public/index.php/setpropheteornot'
+                urlProphete = 'http://79.137.38.211/api/public/index.php/setpropheteornot'
                 print ('')
                 if cardValid == 1 or cardValid2 == 1:
-                    #requests.post(urlProphete, 1)
+                    zero = {'prophete': '0'}
+                    requests.post(urlProphete, data=zero)
                     print ('FALSE : La main du joueur fait qu il n est pas tristan')
                 elif cardValid == 0 or cardValid2 == 0:
-                    #requests.post(urlProphete, 0)
-                    print ('TRUE : La main du joueur fait qu il  est TRISTAN')
+                    one = {'prophete':'1'}
+                    requests.post(urlProphete, data=one)
+                    print ('TRUE : La main du joueur fait qu il est TRISTAN')
 
             # If test Une carte SANS prophete
             else:
