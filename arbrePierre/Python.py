@@ -12,7 +12,7 @@ import os
 import json
 from Carte import *
 from random import *
-from Arbre import *
+from ArbrePierre import *
 #from Liste import *
 
 gListeMain=[]
@@ -38,6 +38,10 @@ clear = lambda: os.system('clear')
 #** GET BEST CARD **#
 def getBestCard(index, ListeMain):
 
+	global gListeMain
+	global gListeVrai
+	global gListeFaux
+
 
 	##** ARBRE DE DECISION **##
 
@@ -46,18 +50,20 @@ def getBestCard(index, ListeMain):
 	#TabCartesVrai à passer à l'arbre
 	tabCartesVrai = []
 	tabCartesFaux = []
+	tabCartesMain = []
 
 	tailleTabVrai = len(gListeVrai)
 	tailleTabFaux = len(gListeFaux)
+	tailleTabMain = len(gListeMain)
 
 	print 'Ma main'
-	print ListeMain
+	print gListeMain
 	print ''
 
 	for i in range(0,5):
-		print ListeMain[i] 	#Ceci affiche chaque carte de la main
-		print ListeMain[i][0]	#SYMBOLE DE LA CARTE
-		print ListeMain[i][1]	#NUMERO DE LA CARTE
+		print gListeMain[i] 	#Ceci affiche chaque carte de la main
+		print gListeMain[i][0]	#SYMBOLE DE LA CARTE
+		print gListeMain[i][1]	#NUMERO DE LA CARTE
 
 
 	#On rempli un tablaeu d'instance de carte suivant les tableaux reçus depuis l'API
@@ -69,14 +75,43 @@ def getBestCard(index, ListeMain):
 		carteFaux = Carte(gListeFaux[k][0], gListeFaux[k][1]) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
 		tabCartesFaux.append(carteFaux)
 
+	for n in range(0,tailleTabMain):
+		carteMain = Carte(gListeMain[n][0], gListeMain[n][1]) #SYMBOLE DE LA CARTE, NUMERO DE LA CARTE
+		tabCartesMain.append(carteMain)
+
+
+	possibleNodes = ['parite', 'tete', 'couleur', 'symbole']
 
 	monArbre = Arbre(tabCartesVrai, tabCartesFaux)
 
-	print 'TEST de la carte ' + str(ListeMain[0])
-	monArbre.testCarte(ListeMain[0])
+
+	monArbre.construire(tabCartesVrai, tabCartesFaux, 'root', 0, possibleNodes, '')
+	
+	print ''
+	print ''
+	print ''
+
+	print 'Tableau VRAI : '
+	print gListeVrai 
+	print 'Tableau FAUX : '
+	print gListeFaux
+	for l in range(0,len(tabCartesMain)):
+		
+		print 'TEST de la carte [symbole : ' + str(tabCartesMain[l].symbole) + ', valeur : ' + str(tabCartesMain[l].valeur) + ']'
+		monArbre.testCarte(tabCartesMain[l])
+		print ' > Poids : ' + str(tabCartesMain[l].poids)
+		
 
 
-	#sleep(15)
+	"""
+	for m in range(0,len(tabCartesMain)):
+
+		if tabCartesMain[m].poids == 1
+
+			carteAjouer = tabCartesMain[m]
+	"""
+
+	sleep(15)
 
 	"""
 	with HandJson['hand'] as data_hand :
@@ -120,6 +155,9 @@ def jouerCoup(CarteAjouer):
 def getHand():
 	
 	global monprint
+	global gListeMain
+	global gListeVrai
+	global gListeFaux
 	index = 0
 
 	while True:
