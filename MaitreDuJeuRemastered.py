@@ -332,8 +332,11 @@ def isCardPlayedValidAndMaybeProphete():
                 return
 
             # If joueur dit PROOOPPHHETEE
-            elif getCardJson and getCardJson['turn'] == '0':
-                print ('Le joueur DIT PROOOPPHHETTEE')
+            elif getCardJson and getCardJson['propheteChecked'] == '1':
+                print ('Le joueur se DIT PROOOPPHHETTEE')
+
+                # Bool de traitement de plusieurs regles PROPHETE
+                cardValidForProphete = 0
 
                 for x in getCardJson['cards']:
 
@@ -343,58 +346,86 @@ def isCardPlayedValidAndMaybeProphete():
 
                     print ('')
 
+                    # On set les regles
+                    setRandomRegle(carteTmp)
+
+                    # Set du return
+                    urlValiditeCard = 'http://79.137.38.211/api/public/index.php/card_valid'
+
                     if nombreRegles == 1:
-                       testParite(carteTmp)
+                        if validiteSuperieur == 1 and validiteInferieur == 1:
+                            print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                            cardValidForProphete = 1
+                        elif validiteCouleur == 1:
+                            print ('')
+                            cardValidForProphete = 1
+                            print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                        elif validiteParite == 1:
+                            cardValidForProphete = 1
+                            print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                        elif validiteEgalite == 1:
+                            cardValidForProphete = 1
+                            print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                        else:
+                            print ('YES : Il est prophete')
 
                     if nombreRegles == 2:
-                        testParite(carteTmp)
-                        testCouleur(carteTmp)
+                        for x in listRegleActive:
+                            if x == 'parite':
+                                if validiteParite == 1:
+                                    cardValidForProphete = 1
+                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif x == 'couleur':
+                                if validiteCouleur == 1:
+                                    cardValidForProphete = 1
+                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif x == 'egalite':
+                                if validiteEgalite == 1:
+                                    cardValidForProphete = 1
+                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif x == 'infsup':
+                                if validiteInferieur == 1 and validiteSuperieur == 1:
+                                    cardValidForProphete = 1
+                                    print (x, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
 
                     if nombreRegles == 3:
-                        testParite(carteTmp)
-                        testCouleur(carteTmp)
-                        testEgaliteCard(carteTmp)
+                        for y in listRegleActive:
+                            if y == 'parite':
+                                if validiteParite == 1:
+                                    cardValidForProphete = 1
+                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif y == 'couleur':
+                                if validiteCouleur == 1:
+                                    cardValidForProphete = 1
+                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif y == 'egalite':
+                                if validiteEgalite == 1:
+                                    cardValidForProphete = 1
+                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
+                            elif y == 'infsup':
+                                if validiteInferieur == 1 and validiteSuperieur == 1:
+                                    cardValidForProphete = 1
+                                    print (y, ' : une carte au moins est valide, donc PAS PROPHETE')
+                                    break
 
-                    # Test des cartes dans la boucle FOR
-                    if nombreRegles == 1:
-                        if validiteCouleur == 1:
-                            print ('')
-                            print (x, ' : carte valide 1 regle')
-                            boolProphete = False
-                            print ('UNLUCKY')
-                            break
-                    if nombreRegles == 2:
-                        if validiteCouleur == 1 and validiteParite == 1:
-                            print ('')
-                            print (x, ' : carte valide 2 regle')
-                            boolProphete = False
-                            print ('UNLUCKY')
-                            break
-                    if nombreRegles == 3:
-                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1:
-                            print ('')
-                            print (x, ' : carte valide 3 regles')
-                            boolProphete = False
-                            print ('UNLUCKY')
-                            break
 
-                    if nombreRegles == 4:
-                        if validiteCouleur == 1 and validiteParite == 1 and validiteSuperieur == 1 and validiteSuperieur == 1:
-                            print ('')
-                            print (x, ' : carte valide 4 regles')
-                            boolProphete = False
-                            print ('UNLUCKY')
-                            break
 
                 # Retour du POST pour prophete
-                urlProphete = 'http://79.137.38.211/api/public/index.php/tristan'
-                if boolProphete:
-                    requests.post(urlProphete, True)
+                urlProphete = 'http://79.137.38.211/api/public/index.php/retour_tristan'
+                if cardValidForProphete == 1:
+                    requests.post(urlProphete, 1)
                     print ('True : La main du joueur fait qu il est tristan')
 
-                elif not boolProphete:
-                    requests.post(urlProphete, False)
-                    print ('False : La main du joueur fait qu il n est tristan')
+                elif cardValidForProphete == 0:
+                    requests.post(urlProphete, 0)
+                    print ('False : La main du joueur fait qu il N est tristan')
 
             # If test Une carte SANS prophete
             else:
