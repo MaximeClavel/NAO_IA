@@ -26,6 +26,7 @@ listReturned = []
 listRegleActive = []
 dictValueReglesActive = {}
 suiteCarteRegleOn = []
+stringRegles = ''
 # End definition regle
 
 boolProphete = True
@@ -47,10 +48,11 @@ def generateregle():
     global listRsegleActive
     global dictValueReglesActive
     global suiteCarteRegleOn
+    global cardIsTrue
     # Plusieurs règles ?
     randomEgaliteOuPair = random.randint(0,1)
 
-    # nbregle = random.randint(1, 3)
+    #nbregle = random.randint(1, 3)
     nbregle = 1
     if nbregle == 1:
         nombreRegles = 1
@@ -115,7 +117,7 @@ def generateregle():
             listRegleActive.append('egalite')
             print ('REGLE SELECT : EGALITE')
         elif intRandom1 == 3:
-            listRegleActive.append('infsup')
+            listRegleActive.append('inferieursuperieur')
             print ('REGLE SELECT :  INFERIEUR SUPERIEUR')
         elif intRandom1 == 4:
             listRegleActive.append('suitedesc')
@@ -133,19 +135,19 @@ def generateregle():
             print ('REGLE SELECT : COULEUR')
         if intRandom2 == 1:
             listRegleActive.append('parite')
-            listRegleActive.append('infsup')
+            listRegleActive.append('inferieursuperieur')
             print ('REGLE SELECT : PARITE')
             print ('REGLE SELECT :  INFERIEUR SUPERIEUR')
         if intRandom2 == 2:
             listRegleActive.append('couleur')
-            listRegleActive.append('infsup')
+            listRegleActive.append('inferieursuperieur')
             print ('REGLE SELECT : COULEUR')
             print ('REGLE SELECT :  INFERIEUR SUPERIEUR')
 
     if nombreRegles == 3:
         listRegleActive.append('parite')
         listRegleActive.append('couleur')
-        listRegleActive.append('infsup')
+        listRegleActive.append('inferieursuperieur')
         print ('REGLE SELECT : PARITE')
         print ('REGLE SELECT : COULEUR')
         print ('REGLE SELECT : INFERIEUR SUPERIEUR')
@@ -351,7 +353,7 @@ def setRandomRegle(carteRdm):
             testCouleur(carteRdm)
         elif x == 'egalite':
             testEgaliteCard(carteRdm)
-        elif x == 'infsup':
+        elif x == 'inferieursuperieur':
             testInferieurEtSuperieur(carteRdm)
         elif x == 'suitedesc':
             testSuiteDecroissante(carteRdm)
@@ -369,6 +371,12 @@ def isCardPlayedValidAndMaybeProphete():
     global dictValueReglesActive
     global listRegleActive
     global suiteCarteRegleOn
+    global cardIsTrue
+    global stringRegles
+
+    stringRegles = ' ,'.join(listRegleActive)
+
+    print ('Regles en string : ', stringRegles)
 
     # Début du ping en folie
     while True:
@@ -448,7 +456,7 @@ def isCardPlayedValidAndMaybeProphete():
                                     break
                                 elif validiteEgalite == 0:
                                     print ('La prophetisation semble correct')
-                            elif x == 'infsup':
+                            elif x == 'inferieursuperieur':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
                                     cardValid2 = 1
                                     print (x, ' : La carte respecte une regle donc pas prophete')
@@ -473,7 +481,7 @@ def isCardPlayedValidAndMaybeProphete():
                                     cardValid = 1
                                     print (x, ' : La carte respecte une regle donc pas prophete')
                                     break
-                            elif y == 'infsup':
+                            elif y == 'inferieursuperieur':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
                                     cardValid = 1
                                     print (x, ' : La carte respecte une regle donc pas prophete')
@@ -483,20 +491,22 @@ def isCardPlayedValidAndMaybeProphete():
                 urlProphete = 'http://79.137.38.211/api/public/index.php/setpropheteornot'
                 print ('')
                 if cardValid == 1 or cardValid2 == 1:
+                    #zero = {'prophete': '0','regles': stringRegles}
                     zero = {'prophete': '0'}
                     requests.post(urlProphete, data=zero)
                     print ('FALSE : La main du joueur fait qu il n est pas tristan')
                 elif cardValid == 0 or cardValid2 == 0:
+                    #one = {'prophete':'1','regles': stringRegles}
                     one = {'prophete':'1'}
                     requests.post(urlProphete, data=one)
                     print ('TRUE : La main du joueur fait qu il est TRISTAN')
 
-            # If test Une carte SANS prophete
+            # If test Une carte SANS prophete NOUVEAU COUP_1
             else:
                 print('')
                 print'Un joueur a joué une carte'
                 print('')
-
+                cardIsTrue = 0
                 for x in getCardJson['cards']:
 
                     carteTmp = Carte(x[0], x[1])
@@ -513,20 +523,20 @@ def isCardPlayedValidAndMaybeProphete():
 
                     if nombreRegles == 1:
                         if validiteSuperieur == 1 and validiteInferieur == 1:
-                            # requests.post(urlValiditeCard, True)
+                            cardIsTrue = 1
                             print (x, ' : carte valide')
                         elif validiteCouleur == 1:
                             print ('')
-                            #requests.post(urlValiditeCard, True)
+                            cardIsTrue = 1
                             print (x,' : carte valide')
                         elif validiteParite == 1:
-                            #requests.post(urlValiditeCard, True)
+                            cardIsTrue = 1
                             print (x, ' : carte valide')
                         elif validiteEgalite == 1:
-                            # requests.post(urlValiditeCard, True)
+                            cardIsTrue = 1
                             print (x, ' : carte valide')
                         elif valideSuite == 1:
-                            # requests.post(urlValiditeCard, True)
+                            cardIsTrue = 1
                             print (x, ' : carte valide')
                         else:
                             print ('NOPE : carte non valide')
@@ -538,73 +548,82 @@ def isCardPlayedValidAndMaybeProphete():
                         for x in listRegleActive:
                             if x == 'parite':
                                 if validiteParite == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (x, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
                             elif x == 'couleur':
                                 if validiteCouleur == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (x, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
                             elif x == 'egalite':
                                 if validiteEgalite == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (x, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
-                            elif x == 'infsup':
+                            elif x == 'inferieursuperieur':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (x, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
-
-                        if cardValid == 0:
-                            print ('NOPE : une ou plusieurs des regles (2) est fausse')
-                        elif cardValid == 1:
-                            print ('YES : la carte est valide pour les deux regles') # TODO: TELL APIIIIII POST
 
                     if nombreRegles == 3:
                         for y in listRegleActive:
                             if y == 'parite':
                                 if validiteParite == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (y, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
                             elif y == 'couleur':
                                 if validiteCouleur == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (y, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
                             elif y == 'egalite':
                                 if validiteEgalite == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (y, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
-                            elif y == 'infsup':
+                            elif y == 'inferieursuperieur':
                                 if validiteInferieur == 1 and validiteSuperieur == 1:
-                                    # requests.post(urlValiditeCard, True)
+                                    cardIsTrue = 1
                                     print (y, ' : carte valide')
                                 else:
                                     cardValid = 0
                                     break
 
-                        if cardValid == 0:
-                            print ('NOPE : une ou plusieurs des regles (3) est fausse')
-                        elif cardValid == 1:
-                            print ('YES : la carte est valide pour les trois regles') # TODO: TELL APIIIIII POST
+                        # Retour du POST pour validite
+                        urlReturnValidite = 'http://79.137.38.211/api/public/index.php/validitecardplayed'
+                        print ('')
+                        if cardIsTrue == 0:
+                            zero = {'validitecardplayed': '0',
+                                    'regles': stringRegles}
+                            requests.post(urlReturnValidite, data=zero)
+                            print ('FALSE : La carte est pas valide')
+                        elif cardIsTrue == 1:
+                            one = {'validitecardplayed': '1',
+                                    'regles': stringRegles}
+                            requests.post(urlReturnValidite, data=one)
+                            print ('TRUE : La carte est valide')
+
+                       # if cardValid == 0:
+                       #     print ('NOPE : une ou plusieurs des regles (3) est fausse')
+                       # elif cardValid == 1:
+                       #     print ('YES : la carte est valide pour les trois regles') # TODO: TELL APIIIIII POST
 
         break
 
